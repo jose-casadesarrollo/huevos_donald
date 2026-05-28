@@ -1,0 +1,151 @@
+/* Import order matters: Tailwind first, then HeroUI OSS.
+ * HeroUI Pro CSS is imported in layout.tsx (Tailwind's @import doesn't
+ * resolve npm subpath CSS like `@heroui-pro/react/css`). */
+@import "tailwindcss";
+@import "@heroui/styles";
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+}
+
+/*
+ * HeroUI Pro Theme — Huevos Donald (red accent #E50914 ≈ oklch(58.14% 0.2348 27.98))
+ * Font: Inter (loaded via next/font/google as var(--font-inter))
+ */
+
+:root,
+.light,
+.default,
+[data-theme="light"],
+[data-theme="default"] {
+  /* Theme Colors */
+  --background: oklch(97.02% 0.0000 27.98);
+  --muted: oklch(55.17% 0.0000 27.98);
+  --scrollbar: oklch(87.10% 0.0000 27.98);
+  --surface-secondary: oklch(95.24% 0.0000 27.98);
+  --surface-tertiary: oklch(93.73% 0.0000 27.98);
+  --default: oklch(94.00% 0.0000 27.98);
+  --accent: oklch(58.14% 0.2348 27.98);
+  --field-border: oklch(90.00% 0.0000 27.98);
+  --border: oklch(90.00% 0.0000 27.98);
+  --separator: oklch(92.00% 0.0000 27.98);
+
+  /* Border Radius */
+  --radius: 0.25rem;
+  --field-radius: 0.5rem;
+
+  /* Calculated Colors */
+  --surface-hover: color-mix(in oklab, var(--surface) 92%, var(--surface-foreground) 8%);
+  --background-secondary: color-mix(in oklab, var(--background) 96%, var(--foreground) 4%);
+  --background-tertiary: color-mix(in oklab, var(--background) 92%, var(--foreground) 8%);
+  --background-inverse: var(--foreground);
+  --default-hover: color-mix(in oklab, var(--default) 96%, var(--default-foreground) 4%);
+  --accent-hover: color-mix(in oklab, var(--accent) 90%, var(--accent-foreground) 10%);
+  --success-hover: color-mix(in oklab, var(--success) 90%, var(--success-foreground) 10%);
+  --warning-hover: color-mix(in oklab, var(--warning) 90%, var(--warning-foreground) 10%);
+  --danger-hover: color-mix(in oklab, var(--danger) 90%, var(--danger-foreground) 10%);
+  --field-hover: color-mix(in oklab, var(--field-background, var(--default)) 90%, var(--field-foreground, var(--foreground)) 2%);
+  --field-focus: var(--field-background, var(--default));
+  --field-border-hover: color-mix(in oklab, var(--field-border, var(--border)) 88%, var(--field-foreground, var(--foreground)) 10%);
+  --field-border-focus: color-mix(in oklab, var(--field-border, var(--border)) 74%, var(--field-foreground, var(--foreground)) 22%);
+  --accent-soft: color-mix(in oklab, var(--accent) 15%, transparent);
+  --accent-soft-foreground: var(--accent);
+  --accent-soft-hover: color-mix(in oklab, var(--accent) 20%, transparent);
+  --danger-soft: color-mix(in oklab, var(--danger) 15%, transparent);
+  --danger-soft-foreground: var(--danger);
+  --danger-soft-hover: color-mix(in oklab, var(--danger) 20%, transparent);
+  --warning-soft: color-mix(in oklab, var(--warning) 15%, transparent);
+  --warning-soft-foreground: var(--warning);
+  --warning-soft-hover: color-mix(in oklab, var(--warning) 20%, transparent);
+  --success-soft: color-mix(in oklab, var(--success) 15%, transparent);
+  --success-soft-foreground: var(--success);
+  --success-soft-hover: color-mix(in oklab, var(--success) 20%, transparent);
+  --separator-secondary: color-mix(in oklab, var(--surface) 85%, var(--surface-foreground) 15%);
+  --separator-tertiary: color-mix(in oklab, var(--surface) 81%, var(--surface-foreground) 19%);
+  --border-secondary: color-mix(in oklab, var(--surface) 78%, var(--surface-foreground) 22%);
+  --border-tertiary: color-mix(in oklab, var(--surface) 66%, var(--surface-foreground) 34%);
+}
+
+.dark,
+[data-theme="dark"] {
+  color-scheme: dark;
+  /* Theme Colors */
+  --background: oklch(12.00% 0.0000 27.98);
+  --muted: oklch(70.50% 0.0000 27.98);
+  --scrollbar: oklch(70.50% 0.0000 27.98);
+  --surface: oklch(21.03% 0.0000 27.98);
+  --surface-secondary: oklch(25.70% 0.0000 27.98);
+  --surface-secondary-foreground: oklch(25.70% 0.0000 27.98);
+  --surface-tertiary: oklch(27.21% 0.0000 27.98);
+  --surface-tertiary-foreground: oklch(27.21% 0.0000 27.98);
+  --overlay: oklch(21.03% 0.0000 27.98);
+  --default: oklch(27.40% 0.0000 27.98);
+  --accent: oklch(58.14% 0.2348 27.98);
+  --field-background: oklch(21.03% 0.0000 27.98);
+  --field-placeholder: oklch(70.50% 0.0000 27.98);
+  --field-border: oklch(28.00% 0.0000 27.98);
+  --segment: oklch(39.64% 0.0000 27.98);
+  --border: oklch(28.00% 0.0000 27.98);
+  --separator: oklch(25.00% 0.0000 27.98);
+
+  /* Calculated Colors */
+  --surface-hover: color-mix(in oklab, var(--surface) 92%, var(--surface-foreground) 8%);
+  --background-secondary: color-mix(in oklab, var(--background) 96%, var(--foreground) 4%);
+  --background-tertiary: color-mix(in oklab, var(--background) 92%, var(--foreground) 8%);
+  --background-inverse: var(--foreground);
+  --default-hover: color-mix(in oklab, var(--default) 96%, var(--default-foreground) 4%);
+  --accent-hover: color-mix(in oklab, var(--accent) 90%, var(--accent-foreground) 10%);
+  --success-hover: color-mix(in oklab, var(--success) 90%, var(--success-foreground) 10%);
+  --warning-hover: color-mix(in oklab, var(--warning) 90%, var(--warning-foreground) 10%);
+  --danger-hover: color-mix(in oklab, var(--danger) 90%, var(--danger-foreground) 10%);
+  --field-hover: color-mix(in oklab, var(--field-background, var(--default)) 90%, var(--field-foreground, var(--foreground)) 2%);
+  --field-focus: var(--field-background, var(--default));
+  --field-border-hover: color-mix(in oklab, var(--field-border, var(--border)) 88%, var(--field-foreground, var(--foreground)) 10%);
+  --field-border-focus: color-mix(in oklab, var(--field-border, var(--border)) 74%, var(--field-foreground, var(--foreground)) 22%);
+  --accent-soft: color-mix(in oklab, var(--accent) 15%, transparent);
+  --accent-soft-foreground: var(--accent);
+  --accent-soft-hover: color-mix(in oklab, var(--accent) 20%, transparent);
+  --danger-soft: color-mix(in oklab, var(--danger) 15%, transparent);
+  --danger-soft-foreground: var(--danger);
+  --danger-soft-hover: color-mix(in oklab, var(--danger) 20%, transparent);
+  --warning-soft: color-mix(in oklab, var(--warning) 15%, transparent);
+  --warning-soft-foreground: var(--warning);
+  --warning-soft-hover: color-mix(in oklab, var(--warning) 20%, transparent);
+  --success-soft: color-mix(in oklab, var(--success) 15%, transparent);
+  --success-soft-foreground: var(--success);
+  --success-soft-hover: color-mix(in oklab, var(--success) 20%, transparent);
+  --separator-secondary: color-mix(in oklab, var(--surface) 85%, var(--surface-foreground) 15%);
+  --separator-tertiary: color-mix(in oklab, var(--surface) 81%, var(--surface-foreground) 19%);
+  --border-secondary: color-mix(in oklab, var(--surface) 78%, var(--surface-foreground) 22%);
+  --border-tertiary: color-mix(in oklab, var(--surface) 66%, var(--surface-foreground) 34%);
+}
+
+body {
+  font-family: var(--font-sans), Inter, system-ui, sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Hero floating overlay animations */
+@keyframes hd-float-a {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@keyframes hd-float-b {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(10px); }
+}
+@keyframes hd-float-c {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+@keyframes hd-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.5); opacity: 0.5; }
+}
+
+.hd-float-a { animation: hd-float-a 6s ease-in-out infinite; }
+.hd-float-b { animation: hd-float-b 7s ease-in-out infinite 0.6s; }
+.hd-float-c { animation: hd-float-c 5s ease-in-out infinite 1.2s; }
+.hd-pulse   { animation: hd-pulse 1.6s ease-in-out infinite; }
