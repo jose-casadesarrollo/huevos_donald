@@ -8,7 +8,15 @@
       "Bash(curl -sI http://localhost:5000/)",
       "Bash(curl -s http://localhost:3000/)",
       "Bash(curl -s http://localhost:3000/login)",
-      "mcp__supabase__get_logs"
+      "mcp__supabase__get_logs",
+      "Bash(curl -s -o /dev/null -w \"/: %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(mkdir -p src/dashboard)",
+      "Bash(cp -r __TRACKED_VAR__/components src/dashboard/components)",
+      "Bash(cp -r __TRACKED_VAR__/views src/dashboard/views)",
+      "Bash(cp -r __TRACKED_VAR__/widgets src/dashboard/widgets)",
+      "Bash(cp -r __TRACKED_VAR__/data src/dashboard/data)",
+      "Bash(npm run *)",
+      "Bash(git check-ignore *)"
     ]
   }
 }
