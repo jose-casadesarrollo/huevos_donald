@@ -101,8 +101,8 @@ export function Pricing() {
   const unit = FREQ_UNIT[freq];
 
   return (
-    <section id="planes" className="bg-background">
-      <div className="mx-auto max-w-7xl px-6 py-20 md:py-28">
+    <section id="planes" className="px-4 py-6 md:px-6 md:py-8">
+      <div className="mx-auto max-w-[96rem] rounded-[2.5rem] bg-surface px-6 py-16 shadow-[var(--shadow-card)] md:px-12 md:py-20">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-extrabold tracking-tight md:text-5xl">Planes para todos</h2>
           <p className="mt-4 text-base text-muted md:text-lg">

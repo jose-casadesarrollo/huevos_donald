@@ -5,8 +5,8 @@ import { Arrow, Check } from "./icons";
 
 export function CTAFinal() {
   return (
-    <section data-theme="dark" className="bg-background text-foreground">
-      <div className="mx-auto max-w-4xl px-6 py-24 text-center md:py-32">
+    <section className="px-4 py-6 md:px-6 md:py-8">
+      <div className="mx-auto max-w-[96rem] rounded-[2.5rem] bg-surface px-6 py-20 text-center shadow-[var(--shadow-card)] md:px-12 md:py-24">
         <h2 className="text-3xl font-extrabold leading-tight tracking-tight md:text-5xl">
           Tu primera caja te está esperando.
         </h2>

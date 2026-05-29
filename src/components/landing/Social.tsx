@@ -34,8 +34,8 @@ const testimonials = [
 
 export function Social() {
   return (
-    <section className="bg-background">
-      <div className="mx-auto max-w-7xl px-6 py-20 md:py-28">
+    <section className="px-4 py-6 md:px-6 md:py-8">
+      <div className="mx-auto max-w-[96rem] rounded-[2.5rem] bg-surface px-6 py-16 shadow-[var(--shadow-card)] md:px-12 md:py-20">
         {/* Stats */}
         <KPIGroup className="grid grid-cols-2 gap-y-6 md:grid-cols-4">
           {stats.map((s, i) => (

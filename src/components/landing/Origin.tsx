@@ -4,8 +4,8 @@ import { Arrow, Handshake, Leaf, Pin } from "./icons";
 
 export function Origin() {
   return (
-    <section id="origen" data-theme="dark" className="bg-background text-foreground">
-      <div className="mx-auto max-w-7xl px-6 py-20 md:py-28">
+    <section id="origen" className="px-4 py-6 md:px-6 md:py-8">
+      <div className="mx-auto max-w-[96rem] px-6 py-16 md:px-12 md:py-20">
         <div className="grid items-center gap-12 md:grid-cols-[1fr_1.05fr] md:gap-16">
           {/* Photo collage — placeholder backgrounds until real photos */}
           <div aria-hidden className="relative h-[420px] w-full md:h-[480px]">

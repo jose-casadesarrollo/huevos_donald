@@ -3,6 +3,7 @@
  * resolve npm subpath CSS like `@heroui-pro/react/css`). */
 @import "tailwindcss";
 @import "@heroui/styles";
+@import "maplibre-gl/dist/maplibre-gl.css";
 
 @theme inline {
   --font-sans: var(--font-inter);
@@ -19,8 +20,9 @@
 .default,
 [data-theme="light"],
 [data-theme="default"] {
-  /* Theme Colors */
-  --background: oklch(97.02% 0.0000 27.98);
+  /* Theme Colors — warm cream page bg, pure-white card surface */
+  --background: oklch(96.30% 0.0100 80.00);
+  --surface: oklch(100.00% 0.0000 0);
   --muted: oklch(55.17% 0.0000 27.98);
   --scrollbar: oklch(87.10% 0.0000 27.98);
   --surface-secondary: oklch(95.24% 0.0000 27.98);
@@ -30,6 +32,9 @@
   --field-border: oklch(90.00% 0.0000 27.98);
   --border: oklch(90.00% 0.0000 27.98);
   --separator: oklch(92.00% 0.0000 27.98);
+
+  /* Section card */
+  --shadow-card: 0 8px 40px -16px rgba(0, 0, 0, 0.10);
 
   /* Border Radius */
   --radius: 0.25rem;
@@ -127,25 +132,3 @@ body {
   color: var(--foreground);
 }
 
-/* Hero floating overlay animations */
-@keyframes hd-float-a {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-8px); }
-}
-@keyframes hd-float-b {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(10px); }
-}
-@keyframes hd-float-c {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
-}
-@keyframes hd-pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50%      { transform: scale(1.5); opacity: 0.5; }
-}
-
-.hd-float-a { animation: hd-float-a 6s ease-in-out infinite; }
-.hd-float-b { animation: hd-float-b 7s ease-in-out infinite 0.6s; }
-.hd-float-c { animation: hd-float-c 5s ease-in-out infinite 1.2s; }
-.hd-pulse   { animation: hd-pulse 1.6s ease-in-out infinite; }

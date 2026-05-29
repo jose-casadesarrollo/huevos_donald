@@ -40,8 +40,8 @@ const items = [
 
 export function FAQ() {
   return (
-    <section id="faq" className="bg-surface-secondary">
-      <div className="mx-auto max-w-7xl px-6 py-20 md:py-28">
+    <section id="faq" className="px-4 py-6 md:px-6 md:py-8">
+      <div className="mx-auto max-w-[96rem] px-6 py-16 md:px-12 md:py-20">
         <div className="grid gap-12 md:grid-cols-[1fr_1.4fr] md:gap-16">
           {/* Sticky left column */}
           <div className="md:sticky md:top-24 md:self-start">

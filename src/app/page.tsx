@@ -8,12 +8,14 @@ import { Origin } from "@/components/landing/Origin";
 import { Pricing } from "@/components/landing/Pricing";
 import { Social } from "@/components/landing/Social";
 import { WhatsAppWidget } from "@/components/landing/WhatsAppWidget";
+import { TrazabilidadSection } from "@/components/sections/Trazabilidad";
 
 export default function Home() {
   return (
     <>
       <Nav />
       <Hero />
+      <TrazabilidadSection />
       <HowItWorks />
       <Pricing />
       <Origin />
