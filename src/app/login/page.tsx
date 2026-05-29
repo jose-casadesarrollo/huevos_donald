@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Icon } from "@iconify/react";
 import {
@@ -17,7 +17,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { userHasAdminRole } from "@/lib/auth/rbac";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const explicitNext = params.get("next");
@@ -194,5 +194,17 @@ export default function LoginPage() {
         </Card.Footer>
       </Card>
     </main>
+  );
+}
+
+function LoginFallback() {
+  return <main className="bg-background flex min-h-screen items-center justify-center p-4" />;
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFallback />}>
+      <LoginForm />
+    </Suspense>
   );
 }
