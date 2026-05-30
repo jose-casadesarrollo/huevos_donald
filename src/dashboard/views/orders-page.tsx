@@ -1,107 +1,89 @@
 "use client";
 
-// TODO: Replace the mock `ORDERS` data (src/data/orders.ts) with a real data
-// source (e.g. your own API, a database query, etc.) and wire up the filter
-// dropdowns to filter the data.
-
-import type {Order} from "../data/orders";
+import type {DeliveryRow, DeliveryStatus} from "@/lib/metrics/types";
 import type {DataGridColumn} from "@heroui-pro/react";
 
-import {Calendar, Funnel} from "@gravity-ui/icons";
-import {Avatar, Button, Chip, Dropdown, Label, SearchField} from "@heroui/react";
-import {DataGrid, NumberValue} from "@heroui-pro/react";
+import {Avatar, Chip} from "@heroui/react";
+import {DataGrid} from "@heroui-pro/react";
 import {useMemo} from "react";
 
-import {ORDERS, STATUS_COLORS, STATUS_LABELS} from "../data/orders";
-import {OrdersRowActions} from "../widgets/orders-row-actions";
-
-const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
+const STATUS_LABEL: Record<DeliveryStatus, string> = {
+  scheduled: "Programado",
+  out_for_delivery: "En reparto",
+  delivered: "Entregado",
+  failed: "Fallido",
+  skipped: "Omitido",
 };
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("es-CL", DATE_FORMAT_OPTIONS);
+const STATUS_COLOR: Record<DeliveryStatus, "success" | "warning" | "default" | "danger"> = {
+  scheduled: "warning",
+  out_for_delivery: "default",
+  delivered: "success",
+  failed: "danger",
+  skipped: "default",
+};
+
+function formatDateTime(iso: string | null): string {
+  if (!iso) return "—";
+
+  return new Date(iso).toLocaleDateString("es-CL", {day: "numeric", month: "short", year: "numeric"});
 }
 
-export function OrdersPage() {
-  const columns = useMemo<DataGridColumn<Order>[]>(
+function initials(name: string | null): string {
+  if (!name) return "—";
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+
+  return parts.slice(0, 2).map((p) => p[0]!.toUpperCase()).join("") || "—";
+}
+
+export function OrdersPage({deliveries}: {deliveries: DeliveryRow[]}) {
+  const columns = useMemo<DataGridColumn<DeliveryRow>[]>(
     () => [
       {
-        accessorKey: "orderId",
-        allowsSorting: true,
-        cell: (item) => <span className="font-medium tabular-nums">{item.orderId}</span>,
-        header: "N° de pedido",
-        id: "orderId",
-        isRowHeader: true,
-        minWidth: 140,
-      },
-      {
-        accessorKey: "customer",
+        accessorKey: "customerName",
         cell: (item) => (
           <div className="flex items-center gap-3">
             <Avatar className="size-8">
-              <Avatar.Image alt={item.customer.name} src={item.customer.avatar} />
-              <Avatar.Fallback>
-                {item.customer.name
-                  .split(" ")
-                  .map((part) => part[0])
-                  .join("")}
-              </Avatar.Fallback>
+              <Avatar.Fallback>{initials(item.customerName)}</Avatar.Fallback>
             </Avatar>
             <div className="flex min-w-0 flex-col">
-              <span className="text-xs font-medium">{item.customer.name}</span>
-              <span className="text-muted text-xs">{item.customer.email}</span>
+              <span className="text-xs font-medium">{item.customerName ?? "—"}</span>
+              <span className="text-muted text-xs">{item.customerEmail ?? ""}</span>
             </div>
           </div>
         ),
         header: "Cliente",
         id: "customer",
-        minWidth: 220,
+        isRowHeader: true,
+        minWidth: 240,
       },
       {
         accessorKey: "status",
-        allowsSorting: true,
-        cell: (item) => (
-          <Chip color={STATUS_COLORS[item.status]} size="sm" variant="soft">
-            {STATUS_LABELS[item.status]}
-          </Chip>
-        ),
+        cell: (item) =>
+          item.status ? (
+            <Chip color={STATUS_COLOR[item.status]} size="sm" variant="soft">
+              {STATUS_LABEL[item.status]}
+            </Chip>
+          ) : null,
         header: "Estado",
         id: "status",
-        minWidth: 120,
+        minWidth: 130,
       },
       {
-        accessorKey: "total",
-        allowsSorting: true,
+        accessorKey: "scheduledFor",
         cell: (item) => (
-          <NumberValue
-            className="tabular-nums"
-            currency={item.currency}
-            maximumFractionDigits={2}
-            style="currency"
-            value={item.total}
-          />
+          <span className="text-muted tabular-nums">{formatDateTime(item.scheduledFor)}</span>
         ),
-        header: "Total",
-        id: "total",
-        minWidth: 120,
+        header: "Programado",
+        id: "scheduledFor",
+        minWidth: 160,
       },
       {
-        accessorKey: "date",
-        allowsSorting: true,
-        cell: (item) => <span className="text-muted tabular-nums">{formatDate(item.date)}</span>,
-        header: "Fecha",
-        id: "date",
-        minWidth: 140,
-      },
-      {
-        align: "end",
-        cell: (item) => <OrdersRowActions orderId={item.id} />,
-        header: "Acciones",
-        id: "actions",
-        minWidth: 140,
+        accessorKey: "notes",
+        cell: (item) => <span className="text-muted">{item.notes ?? "—"}</span>,
+        header: "Notas",
+        id: "notes",
+        minWidth: 200,
       },
     ],
     [],
@@ -111,68 +93,13 @@ export function OrdersPage() {
     <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 pb-10 pt-4">
       <p className="text-muted text-sm">Gestiona y haz seguimiento de los pedidos de clientes.</p>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <SearchField className="w-full sm:w-[240px]" name="orders-search" variant="secondary">
-          <SearchField.Group>
-            <SearchField.SearchIcon />
-            <SearchField.Input placeholder="Buscar pedidos..." />
-            <SearchField.ClearButton />
-          </SearchField.Group>
-        </SearchField>
-
-        <Dropdown>
-          <Button size="sm" variant="secondary">
-            <Funnel className="size-4" />
-            Estado
-          </Button>
-          <Dropdown.Popover>
-            <Dropdown.Menu>
-              <Dropdown.Item id="all" textValue="Todos">
-                <Label>Todos</Label>
-              </Dropdown.Item>
-              <Dropdown.Item id="paid" textValue="Pagado">
-                <Label>Pagado</Label>
-              </Dropdown.Item>
-              <Dropdown.Item id="pending" textValue="Pendiente">
-                <Label>Pendiente</Label>
-              </Dropdown.Item>
-              <Dropdown.Item id="refunded" textValue="Reembolsado">
-                <Label>Reembolsado</Label>
-              </Dropdown.Item>
-              <Dropdown.Item id="failed" textValue="Fallido">
-                <Label>Fallido</Label>
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown.Popover>
-        </Dropdown>
-
-        <Dropdown>
-          <Button size="sm" variant="secondary">
-            <Calendar className="size-4" />
-            Rango de fechas
-          </Button>
-          <Dropdown.Popover>
-            <Dropdown.Menu>
-              <Dropdown.Item id="7d" textValue="Últimos 7 días">
-                <Label>Últimos 7 días</Label>
-              </Dropdown.Item>
-              <Dropdown.Item id="30d" textValue="Últimos 30 días">
-                <Label>Últimos 30 días</Label>
-              </Dropdown.Item>
-              <Dropdown.Item id="90d" textValue="Últimos 90 días">
-                <Label>Últimos 90 días</Label>
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown.Popover>
-        </Dropdown>
-      </div>
-
       <DataGrid
         aria-label="Pedidos"
         columns={columns}
-        contentClassName="min-w-[820px]"
-        data={[...ORDERS]}
+        contentClassName="min-w-[760px]"
+        data={deliveries}
         getRowId={(item) => item.id}
+        renderEmptyState={() => "No hay pedidos programados todavía."}
       />
     </div>
   );

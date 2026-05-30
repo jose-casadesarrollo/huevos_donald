@@ -2,24 +2,33 @@
 
 import {KPI} from "@heroui-pro/react";
 
-import {STATS_CARDS} from "../data/sales";
+import {DEFAULT_CURRENCY} from "@/lib/metrics/format";
+import type {Overview} from "@/lib/metrics/types";
 
-export function KpiRow() {
+// Headline KPIs sourced from admin_metrics_overview. No trend chips yet — we
+// have no prior-period comparison to show honestly.
+export function KpiRow({overview}: {overview: Overview}) {
+  const cards = [
+    {label: "Suscripciones activas", value: overview.activeSubscriptions, currency: undefined},
+    {label: "MRR", value: overview.mrrCents / 100, currency: DEFAULT_CURRENCY},
+    {label: "Ingresos (30 días)", value: overview.revenueLast30dCents / 100, currency: DEFAULT_CURRENCY},
+    {label: "Despachos (próx. 7 días)", value: overview.deliveriesScheduledNext7d, currency: undefined},
+  ];
+
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      {STATS_CARDS.map((stat) => (
-        <KPI key={stat.label}>
+      {cards.map((card) => (
+        <KPI key={card.label}>
           <KPI.Header>
-            <KPI.Title>{stat.label}</KPI.Title>
+            <KPI.Title>{card.label}</KPI.Title>
           </KPI.Header>
           <KPI.Content>
             <KPI.Value
-              currency={stat.currency}
+              currency={card.currency}
               maximumFractionDigits={0}
-              style={stat.currency ? "currency" : "decimal"}
-              value={stat.value}
+              style={card.currency ? "currency" : "decimal"}
+              value={card.value}
             />
-            <KPI.Trend trend={stat.trend}>{stat.trendValue}</KPI.Trend>
           </KPI.Content>
         </KPI>
       ))}

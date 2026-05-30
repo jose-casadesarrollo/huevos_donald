@@ -14,41 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          description: string | null
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          description?: string | null
+          key: string
+          updated_at?: string
+          value: Json
+        }
+        Update: {
+          description?: string | null
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
       deliveries: {
         Row: {
           created_at: string
           delivered_at: string | null
+          delivery_date: string | null
           id: string
+          locked: boolean
           notes: string | null
+          quantity: number | null
           scheduled_for: string
+          slot_id: string | null
           status: Database["public"]["Enums"]["delivery_status"]
           subscription_id: string
           updated_at: string
           user_id: string
+          zone_id: string | null
         }
         Insert: {
           created_at?: string
           delivered_at?: string | null
+          delivery_date?: string | null
           id?: string
+          locked?: boolean
           notes?: string | null
+          quantity?: number | null
           scheduled_for: string
+          slot_id?: string | null
           status?: Database["public"]["Enums"]["delivery_status"]
           subscription_id: string
           updated_at?: string
           user_id: string
+          zone_id?: string | null
         }
         Update: {
           created_at?: string
           delivered_at?: string | null
+          delivery_date?: string | null
           id?: string
+          locked?: boolean
           notes?: string | null
+          quantity?: number | null
           scheduled_for?: string
+          slot_id?: string | null
           status?: Database["public"]["Enums"]["delivery_status"]
           subscription_id?: string
           updated_at?: string
           user_id?: string
+          zone_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "deliveries_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_slots"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "deliveries_subscription_id_fkey"
             columns: ["subscription_id"]
@@ -56,7 +99,141 @@ export type Database = {
             referencedRelation: "subscriptions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "deliveries_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_zones"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      delivery_blackout_dates: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          reason: string | null
+          zone_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          reason?: string | null
+          zone_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          reason?: string | null
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_blackout_dates_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      delivery_slots: {
+        Row: {
+          active: boolean
+          created_at: string
+          end_time: string
+          id: string
+          name: string
+          sort_order: number
+          start_time: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          end_time: string
+          id?: string
+          name: string
+          sort_order?: number
+          start_time: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          end_time?: string
+          id?: string
+          name?: string
+          sort_order?: number
+          start_time?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      delivery_zone_days: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          weekday: number
+          zone_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          weekday: number
+          zone_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          weekday?: number
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_zone_days_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      delivery_zones: {
+        Row: {
+          active: boolean
+          comuna: string | null
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          comuna?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          comuna?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       payments: {
         Row: {
@@ -205,6 +382,7 @@ export type Database = {
           country: string | null
           created_at: string
           delivery_notes: string | null
+          delivery_zone_id: string | null
           email: string | null
           full_name: string | null
           id: string
@@ -221,6 +399,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           delivery_notes?: string | null
+          delivery_zone_id?: string | null
           email?: string | null
           full_name?: string | null
           id: string
@@ -237,6 +416,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           delivery_notes?: string | null
+          delivery_zone_id?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
@@ -246,16 +426,69 @@ export type Database = {
           state?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_delivery_zone_id_fkey"
+            columns: ["delivery_zone_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      slot_capacity: {
+        Row: {
+          created_at: string
+          id: string
+          max_orders: number
+          slot_id: string
+          updated_at: string
+          zone_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          max_orders: number
+          slot_id: string
+          updated_at?: string
+          zone_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          max_orders?: number
+          slot_id?: string
+          updated_at?: string
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "slot_capacity_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_slots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "slot_capacity_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_zones"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscriptions: {
         Row: {
           cancelled_at: string | null
           created_at: string
+          delivery_zone_id: string | null
           id: string
           mercadopago_subscription_id: string | null
           next_billing_at: string | null
           plan_id: string
+          preferred_slot_id: string | null
+          preferred_weekday: number | null
           started_at: string | null
           status: Database["public"]["Enums"]["subscription_status"]
           updated_at: string
@@ -264,10 +497,13 @@ export type Database = {
         Insert: {
           cancelled_at?: string | null
           created_at?: string
+          delivery_zone_id?: string | null
           id?: string
           mercadopago_subscription_id?: string | null
           next_billing_at?: string | null
           plan_id: string
+          preferred_slot_id?: string | null
+          preferred_weekday?: number | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
@@ -276,10 +512,13 @@ export type Database = {
         Update: {
           cancelled_at?: string | null
           created_at?: string
+          delivery_zone_id?: string | null
           id?: string
           mercadopago_subscription_id?: string | null
           next_billing_at?: string | null
           plan_id?: string
+          preferred_slot_id?: string | null
+          preferred_weekday?: number | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
@@ -287,10 +526,31 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "subscriptions_delivery_zone_id_fkey"
+            columns: ["delivery_zone_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_zones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "admin_subscriptions_by_plan"
+            referencedColumns: ["plan_id"]
+          },
+          {
             foreignKeyName: "subscriptions_plan_id_fkey"
             columns: ["plan_id"]
             isOneToOne: false
             referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_preferred_slot_id_fkey"
+            columns: ["preferred_slot_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_slots"
             referencedColumns: ["id"]
           },
         ]
@@ -327,6 +587,18 @@ export type Database = {
       }
     }
     Views: {
+      admin_deliveries_by_day: {
+        Row: {
+          delivered: number | null
+          delivery_date: string | null
+          failed_or_skipped: number | null
+          out_for_delivery: number | null
+          scheduled: number | null
+          total_deliveries: number | null
+          total_units: number | null
+        }
+        Relationships: []
+      }
       admin_deliveries_upcoming: {
         Row: {
           id: string | null
@@ -348,6 +620,14 @@ export type Database = {
           },
         ]
       }
+      admin_egg_demand_by_week: {
+        Row: {
+          delivery_count: number | null
+          total_units: number | null
+          week_start: string | null
+        }
+        Relationships: []
+      }
       admin_metrics_overview: {
         Row: {
           active_subscriptions_count: number | null
@@ -360,6 +640,13 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_new_subscriptions_by_day: {
+        Row: {
+          count: number | null
+          day: string | null
+        }
+        Relationships: []
+      }
       admin_revenue_by_day: {
         Row: {
           day: string | null
@@ -368,8 +655,53 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_slot_utilization: {
+        Row: {
+          booked: number | null
+          delivery_date: string | null
+          max_orders: number | null
+          remaining: number | null
+          slot_id: string | null
+          slot_name: string | null
+          zone_id: string | null
+          zone_name: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deliveries_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_slots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deliveries_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_subscriptions_by_plan: {
+        Row: {
+          active: number | null
+          plan_id: string | null
+          plan_name: string | null
+          total: number | null
+        }
+        Relationships: []
+      }
+      admin_subscriptions_by_status: {
+        Row: {
+          count: number | null
+          status: Database["public"]["Enums"]["subscription_status"] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      generate_upcoming_deliveries: { Args: never; Returns: Json }
       has_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"] }
         Returns: boolean
