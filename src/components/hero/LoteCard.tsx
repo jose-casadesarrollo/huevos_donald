@@ -8,11 +8,11 @@ interface SlotProps {
   active: boolean;
 }
 
-function fadeClasses(active: boolean) {
-  return `absolute inset-0 transition-[opacity,transform] duration-[2000ms] ease-out ${
-    active
-      ? "opacity-100 translate-y-0 pointer-events-auto"
-      : "opacity-0 translate-y-2 pointer-events-none"
+// Stacked slots swap instantly — no enter/exit animation. The active slot is
+// shown, the rest hidden, the moment the index changes. Only the map animates.
+function slotClasses(active: boolean) {
+  return `absolute inset-0 ${
+    active ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
   }`;
 }
 
@@ -32,7 +32,7 @@ function LoteIdDisplay({ id }: { id: string }) {
 
 export function LoteHeaderSlot({ lote, active }: SlotProps) {
   return (
-    <div aria-hidden={!active} className={fadeClasses(active)}>
+    <div aria-hidden={!active} className={slotClasses(active)}>
       {/* Sticker — peeks above the shell card */}
       <div
         className="absolute -top-[14px] right-2 select-none rounded-md bg-[var(--red)] px-3.5 py-2 text-[10px] font-bold tracking-[0.12em] text-[var(--shell)] rotate-3"
@@ -75,7 +75,7 @@ export function LoteHeaderSlot({ lote, active }: SlotProps) {
 
 export function LoteDataSlot({ lote, active }: SlotProps) {
   return (
-    <div aria-hidden={!active} className={fadeClasses(active)}>
+    <div aria-hidden={!active} className={slotClasses(active)}>
       <div className="grid grid-cols-2 gap-2.5">
         <div className="rounded-[10px] border border-[rgba(34,26,15,0.05)] bg-[var(--cream)] px-3.5 py-3">
           <div
