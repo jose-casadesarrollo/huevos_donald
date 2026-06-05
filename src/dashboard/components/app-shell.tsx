@@ -35,8 +35,11 @@ export function AppShell({basePath = "", children, user}: AppShellProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Primitive dep (basePath) + stable `router` ref → stable callback.
-  const navigate = useCallback((href: string) => router.push(basePath + href), [router, basePath]);
+  // The sidebar already builds each MenuItem's `href` as `basePath + item.href`
+  // (see DashboardSidebar's `fullHref`), and HeroUI calls `navigate` with that
+  // same full href. So push it as-is — prepending `basePath` here again would
+  // double it (e.g. `/admin/admin/logout`). Stable `router` ref → stable callback.
+  const navigate = useCallback((href: string) => router.push(href), [router]);
 
   // Derive the navbar title from the current route during render —
   // no useState + useEffect mirror (`rerender-derived-state-no-effect`).
