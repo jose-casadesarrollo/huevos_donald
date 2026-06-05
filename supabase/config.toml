@@ -1,0 +1,18 @@
+# Supabase project config. Generated for the Huevos Donald agent work.
+# Link with: supabase link --project-ref krapajktuulxvphsgtro
+project_id = "krapajktuulxvphsgtro"
+
+[edge_runtime]
+# "per_worker" lets EdgeRuntime.waitUntil background work (message persistence)
+# finish during local `supabase functions serve`. Production runs per-request.
+policy = "per_worker"
+
+[functions.agent-telegram]
+# Telegram calls this webhook; it cannot present a Supabase JWT.
+# We authenticate the caller via the X-Telegram-Bot-Api-Secret-Token header instead.
+verify_jwt = false
+
+[functions.agent-chat]
+# Browser chat endpoint. Auth is handled inside the function (optional Supabase
+# session) + CORS; no platform JWT gate so anonymous visitors can chat too.
+verify_jwt = false
