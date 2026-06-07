@@ -6,15 +6,19 @@ import { Arrow } from "./icons";
 const items = [
   {
     q: "¿Cómo funciona la suscripción?",
-    a: "Eliges un plan (Esencial, Familiar o Negocio), seleccionas la frecuencia de despacho y listo. Cada semana, quincena o mes recibes huevos frescos en tu puerta. Sin contratos de permanencia.",
+    a: "Eliges un plan, seleccionas la frecuencia de despacho y listo. Cada semana, quincena o mes recibes huevos frescos en tu puerta. Sin contratos de permanencia.",
   },
   {
     q: "¿Puedo pausar o cancelar mi suscripción?",
-    a: "Sí, en cualquier momento desde tu panel de suscriptor. Sin penalidades, sin preguntas. Puedes pausar hasta 3 meses y reactivar cuando quieras.",
+    a: "Sí, cuando quieras desde tu panel de suscriptor, sin penalización. Durante la pausa no se generan cobros ni despachos y tu saldo de huevos se conserva. Al reactivar recuperas tu saldo y tus puntos; si cancelas, no se afectan los despachos ya pagados en preparación y los puntos acumulados caducan.",
   },
   {
     q: "¿Dónde hacen despacho?",
-    a: "Actualmente cubrimos toda la Región de Los Lagos. Estamos expandiendo cobertura — déjanos tu comuna y te avisamos cuando lleguemos.",
+    a: "Despachamos en 7 comunas de Santiago: Lo Barnechea, Las Condes, Vitacura, Providencia, La Reina, Ñuñoa y Peñalolén. Estamos ampliando cobertura — déjanos tu comuna y te avisamos cuando lleguemos.",
+  },
+  {
+    q: "¿Cuáles son los horarios de despacho?",
+    a: "Despachamos de lunes a jueves de 10:00 a 17:00 y los viernes de 10:00 a 13:00. No hay despachos los sábados, domingos ni feriados (salvo campañas especiales, que te avisaríamos con anticipación).",
   },
   {
     q: "¿Qué tipo de huevos son?",
@@ -23,6 +27,10 @@ const items = [
   {
     q: "¿Cuánto demora el despacho?",
     a: "Los huevos se recolectan y despachan en un máximo de 48 horas. Recibes producto que tiene días, no semanas, desde la postura.",
+  },
+  {
+    q: "¿Y si llegan huevos quebrados o dañados?",
+    a: "Avísanos dentro de las 24 horas siguientes a la entrega con una foto. Lo resolvemos con reposición (parcial o total) o un cupón de descuento. En incidentes de producto no hacemos devolución de dinero.",
   },
   {
     q: "¿Qué métodos de pago aceptan?",
@@ -34,7 +42,7 @@ const items = [
   },
   {
     q: "¿Hacen descuento por volumen o para empresas?",
-    a: "Sí. El Plan Negocio tiene precios por volumen y facturación empresarial. Contáctanos por WhatsApp para una cotización personalizada.",
+    a: "Sí. El plan más grande tiene precios por volumen y facturación empresarial. Contáctanos por WhatsApp para una cotización personalizada.",
   },
 ];
 

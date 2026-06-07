@@ -71,6 +71,30 @@ export type Database = {
           },
         ]
       }
+      agent_message_feedback: {
+        Row: {
+          chat_id: string
+          created_at: string
+          id: string
+          message_id: string
+          rating: string
+        }
+        Insert: {
+          chat_id: string
+          created_at?: string
+          id?: string
+          message_id: string
+          rating: string
+        }
+        Update: {
+          chat_id?: string
+          created_at?: string
+          id?: string
+          message_id?: string
+          rating?: string
+        }
+        Relationships: []
+      }
       agent_messages: {
         Row: {
           completion_tokens: number | null
@@ -183,6 +207,121 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_redemptions: {
+        Row: {
+          amount_cents: number | null
+          coupon_id: string
+          id: string
+          order_id: string | null
+          redeemed_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_cents?: number | null
+          coupon_id: string
+          id?: string
+          order_id?: string | null
+          redeemed_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_cents?: number | null
+          coupon_id?: string
+          id?: string
+          order_id?: string | null
+          redeemed_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_redemptions_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_redemptions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_redemptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          currency: string
+          id: string
+          incident_id: string | null
+          max_redemptions: number
+          reason: string | null
+          redeemed_count: number
+          status: Database["public"]["Enums"]["coupon_status"]
+          type: Database["public"]["Enums"]["coupon_type"]
+          user_id: string | null
+          valid_from: string
+          valid_until: string | null
+          value: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          currency?: string
+          id?: string
+          incident_id?: string | null
+          max_redemptions?: number
+          reason?: string | null
+          redeemed_count?: number
+          status?: Database["public"]["Enums"]["coupon_status"]
+          type: Database["public"]["Enums"]["coupon_type"]
+          user_id?: string | null
+          valid_from?: string
+          valid_until?: string | null
+          value: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          incident_id?: string | null
+          max_redemptions?: number
+          reason?: string | null
+          redeemed_count?: number
+          status?: Database["public"]["Enums"]["coupon_status"]
+          type?: Database["public"]["Enums"]["coupon_type"]
+          user_id?: string | null
+          valid_from?: string
+          valid_until?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupons_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "incidents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupons_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deliveries: {
         Row: {
           created_at: string
@@ -190,8 +329,12 @@ export type Database = {
           delivery_date: string | null
           id: string
           locked: boolean
+          lot_id: string | null
           notes: string | null
+          out_for_delivery_at: string | null
+          prepared_at: string | null
           quantity: number | null
+          ready_at: string | null
           scheduled_for: string
           slot_id: string | null
           status: Database["public"]["Enums"]["delivery_status"]
@@ -206,8 +349,12 @@ export type Database = {
           delivery_date?: string | null
           id?: string
           locked?: boolean
+          lot_id?: string | null
           notes?: string | null
+          out_for_delivery_at?: string | null
+          prepared_at?: string | null
           quantity?: number | null
+          ready_at?: string | null
           scheduled_for: string
           slot_id?: string | null
           status?: Database["public"]["Enums"]["delivery_status"]
@@ -222,8 +369,12 @@ export type Database = {
           delivery_date?: string | null
           id?: string
           locked?: boolean
+          lot_id?: string | null
           notes?: string | null
+          out_for_delivery_at?: string | null
+          prepared_at?: string | null
           quantity?: number | null
+          ready_at?: string | null
           scheduled_for?: string
           slot_id?: string | null
           status?: Database["public"]["Enums"]["delivery_status"]
@@ -233,6 +384,13 @@ export type Database = {
           zone_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "deliveries_lot_id_fkey"
+            columns: ["lot_id"]
+            isOneToOne: false
+            referencedRelation: "production_lots"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "deliveries_slot_id_fkey"
             columns: ["slot_id"]
@@ -383,6 +541,281 @@ export type Database = {
         }
         Relationships: []
       }
+      egg_ledger: {
+        Row: {
+          created_at: string
+          delivery_id: string | null
+          delta: number
+          id: string
+          note: string | null
+          order_id: string | null
+          payment_id: string | null
+          reason: Database["public"]["Enums"]["egg_ledger_reason"]
+          subscription_id: string | null
+          user_id: string
+          value_cents_per_unit: number | null
+        }
+        Insert: {
+          created_at?: string
+          delivery_id?: string | null
+          delta: number
+          id?: string
+          note?: string | null
+          order_id?: string | null
+          payment_id?: string | null
+          reason: Database["public"]["Enums"]["egg_ledger_reason"]
+          subscription_id?: string | null
+          user_id: string
+          value_cents_per_unit?: number | null
+        }
+        Update: {
+          created_at?: string
+          delivery_id?: string | null
+          delta?: number
+          id?: string
+          note?: string | null
+          order_id?: string | null
+          payment_id?: string | null
+          reason?: Database["public"]["Enums"]["egg_ledger_reason"]
+          subscription_id?: string | null
+          user_id?: string
+          value_cents_per_unit?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "egg_ledger_delivery_id_fkey"
+            columns: ["delivery_id"]
+            isOneToOne: false
+            referencedRelation: "admin_deliveries_upcoming"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "egg_ledger_delivery_id_fkey"
+            columns: ["delivery_id"]
+            isOneToOne: false
+            referencedRelation: "deliveries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "egg_ledger_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "egg_ledger_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "egg_ledger_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "egg_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      incident_photos: {
+        Row: {
+          created_at: string
+          id: string
+          incident_id: string
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          incident_id: string
+          storage_path: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          incident_id?: string
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incident_photos_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      incidents: {
+        Row: {
+          created_at: string
+          delivery_id: string | null
+          description: string | null
+          id: string
+          note: string | null
+          order_id: string | null
+          reported_at: string
+          resolution: Database["public"]["Enums"]["incident_resolution"] | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: Database["public"]["Enums"]["incident_status"]
+          type: Database["public"]["Enums"]["incident_type"]
+          updated_at: string
+          user_id: string
+          within_window: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          delivery_id?: string | null
+          description?: string | null
+          id?: string
+          note?: string | null
+          order_id?: string | null
+          reported_at?: string
+          resolution?: Database["public"]["Enums"]["incident_resolution"] | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: Database["public"]["Enums"]["incident_status"]
+          type?: Database["public"]["Enums"]["incident_type"]
+          updated_at?: string
+          user_id: string
+          within_window?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          delivery_id?: string | null
+          description?: string | null
+          id?: string
+          note?: string | null
+          order_id?: string | null
+          reported_at?: string
+          resolution?: Database["public"]["Enums"]["incident_resolution"] | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: Database["public"]["Enums"]["incident_status"]
+          type?: Database["public"]["Enums"]["incident_type"]
+          updated_at?: string
+          user_id?: string
+          within_window?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incidents_delivery_id_fkey"
+            columns: ["delivery_id"]
+            isOneToOne: false
+            referencedRelation: "admin_deliveries_upcoming"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_delivery_id_fkey"
+            columns: ["delivery_id"]
+            isOneToOne: false
+            referencedRelation: "deliveries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_resolved_by_fkey"
+            columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_events: {
+        Row: {
+          channel: string
+          created_at: string
+          delivery_id: string | null
+          event_type: Database["public"]["Enums"]["notification_event_type"]
+          id: string
+          order_id: string | null
+          payload: Json
+          scheduled_for: string | null
+          sent_at: string | null
+          status: Database["public"]["Enums"]["notification_status"]
+          user_id: string | null
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          delivery_id?: string | null
+          event_type: Database["public"]["Enums"]["notification_event_type"]
+          id?: string
+          order_id?: string | null
+          payload?: Json
+          scheduled_for?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["notification_status"]
+          user_id?: string | null
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          delivery_id?: string | null
+          event_type?: Database["public"]["Enums"]["notification_event_type"]
+          id?: string
+          order_id?: string | null
+          payload?: Json
+          scheduled_for?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["notification_status"]
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_events_delivery_id_fkey"
+            columns: ["delivery_id"]
+            isOneToOne: false
+            referencedRelation: "admin_deliveries_upcoming"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_events_delivery_id_fkey"
+            columns: ["delivery_id"]
+            isOneToOne: false
+            referencedRelation: "deliveries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           amount_cents: number
@@ -396,6 +829,7 @@ export type Database = {
           delivery_zone_id: string | null
           id: string
           mercadopago_payment_id: string | null
+          payment_expires_at: string | null
           plan_id: string | null
           preferred_slot_id: string | null
           quantity: number
@@ -417,6 +851,7 @@ export type Database = {
           delivery_zone_id?: string | null
           id?: string
           mercadopago_payment_id?: string | null
+          payment_expires_at?: string | null
           plan_id?: string | null
           preferred_slot_id?: string | null
           quantity: number
@@ -438,6 +873,7 @@ export type Database = {
           delivery_zone_id?: string | null
           id?: string
           mercadopago_payment_id?: string | null
+          payment_expires_at?: string | null
           plan_id?: string | null
           preferred_slot_id?: string | null
           quantity?: number
@@ -497,43 +933,58 @@ export type Database = {
           amount_cents: number
           created_at: string
           currency: string
+          expires_at: string | null
+          external_reference: string
           id: string
-          mercadopago_payment_id: string
+          mercadopago_payment_id: string | null
+          mp_init_point: string | null
+          mp_preference_id: string | null
           order_id: string | null
           paid_at: string | null
-          raw: Json
+          raw: Json | null
+          source: string
           status: Database["public"]["Enums"]["payment_status"]
           subscription_id: string | null
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           amount_cents: number
           created_at?: string
           currency: string
+          expires_at?: string | null
+          external_reference?: string
           id?: string
-          mercadopago_payment_id: string
+          mercadopago_payment_id?: string | null
+          mp_init_point?: string | null
+          mp_preference_id?: string | null
           order_id?: string | null
           paid_at?: string | null
-          raw: Json
+          raw?: Json | null
+          source?: string
           status: Database["public"]["Enums"]["payment_status"]
           subscription_id?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           amount_cents?: number
           created_at?: string
           currency?: string
+          expires_at?: string | null
+          external_reference?: string
           id?: string
-          mercadopago_payment_id?: string
+          mercadopago_payment_id?: string | null
+          mp_init_point?: string | null
+          mp_preference_id?: string | null
           order_id?: string | null
           paid_at?: string | null
-          raw?: Json
+          raw?: Json | null
+          source?: string
           status?: Database["public"]["Enums"]["payment_status"]
           subscription_id?: string | null
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -608,6 +1059,71 @@ export type Database = {
           },
         ]
       }
+      points_ledger: {
+        Row: {
+          created_at: string
+          delta: number
+          id: string
+          note: string | null
+          order_id: string | null
+          payment_id: string | null
+          reason: Database["public"]["Enums"]["points_ledger_reason"]
+          subscription_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          delta: number
+          id?: string
+          note?: string | null
+          order_id?: string | null
+          payment_id?: string | null
+          reason: Database["public"]["Enums"]["points_ledger_reason"]
+          subscription_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          delta?: number
+          id?: string
+          note?: string | null
+          order_id?: string | null
+          payment_id?: string | null
+          reason?: Database["public"]["Enums"]["points_ledger_reason"]
+          subscription_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "points_ledger_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "points_ledger_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "points_ledger_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "points_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       processed_webhook_events: {
         Row: {
           event_id: string
@@ -628,6 +1144,56 @@ export type Database = {
           provider?: string
         }
         Relationships: []
+      }
+      production_lots: {
+        Row: {
+          classification_date: string | null
+          created_at: string
+          dispatch_date: string | null
+          id: string
+          lot_code: string
+          notes: string | null
+          postura_date: string | null
+          prepared_date: string | null
+          product_id: string | null
+          trace_token: string
+          updated_at: string
+        }
+        Insert: {
+          classification_date?: string | null
+          created_at?: string
+          dispatch_date?: string | null
+          id?: string
+          lot_code: string
+          notes?: string | null
+          postura_date?: string | null
+          prepared_date?: string | null
+          product_id?: string | null
+          trace_token?: string
+          updated_at?: string
+        }
+        Update: {
+          classification_date?: string | null
+          created_at?: string
+          dispatch_date?: string | null
+          id?: string
+          lot_code?: string
+          notes?: string | null
+          postura_date?: string | null
+          prepared_date?: string | null
+          product_id?: string | null
+          trace_token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "production_lots_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       products: {
         Row: {
@@ -676,6 +1242,7 @@ export type Database = {
           id: string
           mercadopago_customer_id: string | null
           phone: string | null
+          points_balance: number
           postal_code: string | null
           state: string | null
           updated_at: string
@@ -693,6 +1260,7 @@ export type Database = {
           id: string
           mercadopago_customer_id?: string | null
           phone?: string | null
+          points_balance?: number
           postal_code?: string | null
           state?: string | null
           updated_at?: string
@@ -710,6 +1278,7 @@ export type Database = {
           id?: string
           mercadopago_customer_id?: string | null
           phone?: string | null
+          points_balance?: number
           postal_code?: string | null
           state?: string | null
           updated_at?: string
@@ -769,14 +1338,24 @@ export type Database = {
       subscriptions: {
         Row: {
           cancelled_at: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          conversation_id: string | null
           created_at: string
           delivery_zone_id: string | null
+          egg_balance: number
+          external_reference: string
           id: string
           mercadopago_subscription_id: string | null
           next_billing_at: string | null
+          pause_reason: string | null
+          paused_at: string | null
           plan_id: string
           preferred_slot_id: string | null
           preferred_weekday: number | null
+          reactivated_at: string | null
+          resume_at: string | null
+          source: string
           started_at: string | null
           status: Database["public"]["Enums"]["subscription_status"]
           updated_at: string
@@ -784,14 +1363,24 @@ export type Database = {
         }
         Insert: {
           cancelled_at?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          conversation_id?: string | null
           created_at?: string
           delivery_zone_id?: string | null
+          egg_balance?: number
+          external_reference?: string
           id?: string
           mercadopago_subscription_id?: string | null
           next_billing_at?: string | null
+          pause_reason?: string | null
+          paused_at?: string | null
           plan_id: string
           preferred_slot_id?: string | null
           preferred_weekday?: number | null
+          reactivated_at?: string | null
+          resume_at?: string | null
+          source?: string
           started_at?: string | null
           status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
@@ -799,20 +1388,37 @@ export type Database = {
         }
         Update: {
           cancelled_at?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          conversation_id?: string | null
           created_at?: string
           delivery_zone_id?: string | null
+          egg_balance?: number
+          external_reference?: string
           id?: string
           mercadopago_subscription_id?: string | null
           next_billing_at?: string | null
+          pause_reason?: string | null
+          paused_at?: string | null
           plan_id?: string
           preferred_slot_id?: string | null
           preferred_weekday?: number | null
+          reactivated_at?: string | null
+          resume_at?: string | null
+          source?: string
           started_at?: string | null
           status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "subscriptions_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "agent_conversations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "subscriptions_delivery_zone_id_fkey"
             columns: ["delivery_zone_id"]
@@ -989,23 +1595,57 @@ export type Database = {
       }
     }
     Functions: {
+      delivery_customer_state: {
+        Args: { p_delivery_id: string }
+        Returns: string
+      }
       generate_upcoming_deliveries: { Args: never; Returns: Json }
       has_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"] }
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      process_subscription_pauses: { Args: never; Returns: Json }
     }
     Enums: {
       agent_conversation_status: "open" | "awaiting_approval" | "closed"
       app_role: "admin" | "customer"
       approval_status: "pending" | "approved" | "denied" | "expired"
+      coupon_status: "active" | "redeemed" | "expired" | "void"
+      coupon_type: "percent" | "fixed" | "eggs"
       delivery_status:
         | "scheduled"
+        | "preparing"
+        | "ready_for_dispatch"
         | "out_for_delivery"
         | "delivered"
         | "failed"
         | "skipped"
+      egg_ledger_reason:
+        | "plan_credit"
+        | "delivery_debit"
+        | "refund"
+        | "adjustment"
+        | "incident_credit"
+      incident_resolution:
+        | "partial_replacement"
+        | "full_replacement"
+        | "coupon"
+        | "none"
+      incident_status: "open" | "reviewing" | "resolved" | "rejected"
+      incident_type:
+        | "damaged_product"
+        | "missing_items"
+        | "wrong_items"
+        | "other"
+      notification_event_type:
+        | "payment_confirmed"
+        | "preparing"
+        | "out_for_delivery"
+        | "eta_20m"
+        | "eta_5m"
+        | "delivered"
+      notification_status: "pending" | "sent" | "failed" | "skipped"
       order_status:
         | "pending"
         | "awaiting_payment"
@@ -1020,7 +1660,15 @@ export type Database = {
         | "rejected"
         | "refunded"
         | "charged_back"
+        | "cancelled"
+        | "expired"
       plan_frequency: "weekly" | "biweekly" | "monthly"
+      points_ledger_reason:
+        | "purchase"
+        | "renewal"
+        | "redemption"
+        | "expiration"
+        | "adjustment"
       subscription_status:
         | "pending"
         | "authorized"
@@ -1157,13 +1805,46 @@ export const Constants = {
       agent_conversation_status: ["open", "awaiting_approval", "closed"],
       app_role: ["admin", "customer"],
       approval_status: ["pending", "approved", "denied", "expired"],
+      coupon_status: ["active", "redeemed", "expired", "void"],
+      coupon_type: ["percent", "fixed", "eggs"],
       delivery_status: [
         "scheduled",
+        "preparing",
+        "ready_for_dispatch",
         "out_for_delivery",
         "delivered",
         "failed",
         "skipped",
       ],
+      egg_ledger_reason: [
+        "plan_credit",
+        "delivery_debit",
+        "refund",
+        "adjustment",
+        "incident_credit",
+      ],
+      incident_resolution: [
+        "partial_replacement",
+        "full_replacement",
+        "coupon",
+        "none",
+      ],
+      incident_status: ["open", "reviewing", "resolved", "rejected"],
+      incident_type: [
+        "damaged_product",
+        "missing_items",
+        "wrong_items",
+        "other",
+      ],
+      notification_event_type: [
+        "payment_confirmed",
+        "preparing",
+        "out_for_delivery",
+        "eta_20m",
+        "eta_5m",
+        "delivered",
+      ],
+      notification_status: ["pending", "sent", "failed", "skipped"],
       order_status: [
         "pending",
         "awaiting_payment",
@@ -1179,8 +1860,17 @@ export const Constants = {
         "rejected",
         "refunded",
         "charged_back",
+        "cancelled",
+        "expired",
       ],
       plan_frequency: ["weekly", "biweekly", "monthly"],
+      points_ledger_reason: [
+        "purchase",
+        "renewal",
+        "redemption",
+        "expiration",
+        "adjustment",
+      ],
       subscription_status: [
         "pending",
         "authorized",

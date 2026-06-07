@@ -14,7 +14,7 @@ function scrollTo(id: string) {
 
 function Brand() {
   return (
-    <a href="#top" className="flex items-center text-[15px] font-extrabold tracking-tight">
+    <a href="/#top" className="flex items-center text-[15px] font-extrabold tracking-tight">
       <span>HUEVOS</span>
       <span className="mx-1 inline-block size-[6px] rounded-full bg-accent align-middle" />
       <span>DONALD</span>
@@ -35,7 +35,7 @@ export function NavClient({ user, isAdmin }: NavClientProps) {
         <Navbar.Spacer />
         <Navbar.Content className="hidden md:flex">
           <Navbar.Item href="#como-funciona">Cómo Funciona</Navbar.Item>
-          <Navbar.Item href="#planes">Planes</Navbar.Item>
+          <Navbar.Item href="/planes">Planes</Navbar.Item>
           <Navbar.Item href="#origen">Nosotros</Navbar.Item>
           {user ? (
             <Button
@@ -68,7 +68,7 @@ export function NavClient({ user, isAdmin }: NavClientProps) {
       </Navbar.Header>
       <Navbar.Menu>
         <Navbar.MenuItem href="#como-funciona">Cómo Funciona</Navbar.MenuItem>
-        <Navbar.MenuItem href="#planes">Planes</Navbar.MenuItem>
+        <Navbar.MenuItem href="/planes">Planes</Navbar.MenuItem>
         <Navbar.MenuItem href="#origen">Nosotros</Navbar.MenuItem>
         {user ? (
           <Navbar.MenuItem href={dashboardHref}>{dashboardLabel}</Navbar.MenuItem>

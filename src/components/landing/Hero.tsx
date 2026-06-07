@@ -50,7 +50,7 @@ export function Hero() {
                 <Star className="text-accent" /> +500 suscriptores activos
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <Pin className="size-3.5 text-muted" /> Despacho en Región de Los Lagos
+                <Pin className="size-3.5 text-muted" /> Despacho en Santiago
               </span>
             </div>
           </div>

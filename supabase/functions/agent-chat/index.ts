@@ -23,6 +23,7 @@ import {
   touchOutbound,
 } from "../_shared/conversations.ts";
 import { corsHeaders, preflight } from "../_shared/cors.ts";
+import { resolveCustomerIdentity } from "../_shared/identity.ts";
 
 const CHANNEL = "web";
 
@@ -56,11 +57,18 @@ Deno.serve(async (req) => {
   const conv = await getOrCreateConversation(db, { channel: CHANNEL, externalId });
   await touchInbound(db, conv.id);
 
+  // Trusted customer identity from the forwarded session JWT (web → user_id).
+  const jwt = req.headers.get("x-customer-jwt");
+  const { userId } = await resolveCustomerIdentity(db, { channel: CHANNEL, jwt });
+  if (userId) {
+    await db.from("agent_conversations").update({ user_id: userId }).eq("id", conv.id);
+  }
+
   const result = streamText({
     model: getModel(),
-    system: buildSystemPrompt(),
+    system: buildSystemPrompt({ authenticated: !!userId }),
     messages: await convertToModelMessages(messages),
-    tools: buildTools(db, { conversationId: conv.id, channel: CHANNEL }),
+    tools: buildTools(db, { conversationId: conv.id, channel: CHANNEL, userId }),
     stopWhen: stepCountIs(8),
     onError: ({ error }) => console.error("agent-chat stream error", error),
   });

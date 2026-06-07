@@ -2,12 +2,15 @@ import { CTAFinal } from "@/components/landing/CTAFinal";
 import { FAQ } from "@/components/landing/FAQ";
 import { Footer } from "@/components/landing/Footer";
 import { Hero } from "@/components/landing/Hero";
-import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Nav } from "@/components/landing/Nav";
-import { Origin } from "@/components/landing/Origin";
-import { Pricing } from "@/components/landing/Pricing";
 import { Social } from "@/components/landing/Social";
 import { WhatsAppWidget } from "@/components/landing/WhatsAppWidget";
+import { SupportChatWidget } from "@/components/support/SupportChatWidget";
+import { ComoFuncionaSection } from "@/components/sections/ComoFunciona";
+import { ContrasteSection } from "@/components/sections/Contraste";
+import { ImpactoSection } from "@/components/sections/Impacto";
+import { PlanesSection } from "@/components/sections/Planes";
+import { ProductoresSection } from "@/components/sections/Productores";
 import { TrazabilidadSection } from "@/components/sections/Trazabilidad";
 
 export default function Home() {
@@ -16,14 +19,17 @@ export default function Home() {
       <Nav />
       <Hero />
       <TrazabilidadSection />
-      <HowItWorks />
-      <Pricing />
-      <Origin />
+      <ContrasteSection />
+      <ProductoresSection />
+      <ComoFuncionaSection />
+      <PlanesSection />
       <Social />
+      <ImpactoSection />
       <FAQ />
       <CTAFinal />
       <Footer />
       <WhatsAppWidget />
+      <SupportChatWidget />
     </>
   );
 }

@@ -9,6 +9,8 @@ import {useMemo} from "react";
 
 const STATUS_LABEL: Record<DeliveryStatus, string> = {
   scheduled: "Programado",
+  preparing: "En preparación",
+  ready_for_dispatch: "Listo para despacho",
   out_for_delivery: "En reparto",
   delivered: "Entregado",
   failed: "Fallido",
@@ -17,6 +19,8 @@ const STATUS_LABEL: Record<DeliveryStatus, string> = {
 
 const STATUS_COLOR: Record<DeliveryStatus, "success" | "warning" | "default" | "danger"> = {
   scheduled: "warning",
+  preparing: "warning",
+  ready_for_dispatch: "default",
   out_for_delivery: "default",
   delivered: "success",
   failed: "danger",

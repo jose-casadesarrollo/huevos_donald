@@ -4,6 +4,7 @@ import {
   ArrowRightFromSquare,
   CircleQuestion,
   Gear,
+  Headphones,
   House,
   ListCheck,
   Receipt,
@@ -19,6 +20,7 @@ export type NavItem = {
 export const NAV_ITEMS: readonly NavItem[] = [
   {href: "/", icon: House, label: "Inicio"},
   {href: "/orders", icon: Receipt, label: "Pedidos"},
+  {href: "/support", icon: Headphones, label: "Soporte"},
   {badge: "Nuevo", href: "/tracker", icon: ListCheck, label: "Seguimiento"},
   {href: "/settings", icon: Gear, label: "Ajustes"},
 ] as const;

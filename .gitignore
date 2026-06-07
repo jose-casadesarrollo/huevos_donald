@@ -46,3 +46,8 @@ next-env.d.ts
 
 # claude code local settings
 .claude/settings.local.json
+# claude code per-agent runtime memory (local state, not product)
+.claude/agent-memory/
+
+# supabase cli local link state
+supabase/.temp/

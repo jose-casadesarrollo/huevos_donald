@@ -2,7 +2,7 @@
 //
 // Two persistence shapes share the agent_messages table (distinguished by the
 // conversation's channel):
-//   * Telegram (stateless server): we store provider ModelMessage[] so the next
+//   * WhatsApp (stateless server): we store provider ModelMessage[] so the next
 //     turn can be reconstructed server-side. We APPEND new messages each turn.
 //   * Web (useChat): the client sends full history each turn, so we persist the
 //     final UIMessage[] from onFinish purely for audit — REPLACE-all per turn.
@@ -94,7 +94,7 @@ export function extractText(content: unknown): string {
   return "";
 }
 
-// ── Telegram (ModelMessage[]) ────────────────────────────────────────────────
+// ── WhatsApp (ModelMessage[]) ────────────────────────────────────────────────
 
 export async function loadModelMessages(
   db: Db,

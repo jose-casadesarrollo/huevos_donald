@@ -16,7 +16,18 @@
       "Bash(cp -r __TRACKED_VAR__/widgets src/dashboard/widgets)",
       "Bash(cp -r __TRACKED_VAR__/data src/dashboard/data)",
       "Bash(npm run *)",
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(npm install *)",
+      "Bash(claude --version)",
+      "Bash([ -d \"node_modules/$p\" ])",
+      "Bash(node -e \"const e=require\\('@heroui-pro/react/package.json'\\).exports; console.log\\(typeof e, e && JSON.stringify\\(e\\).slice\\(0,300\\)\\)\")",
+      "Bash(node -e \"try{console.log\\(require.resolve\\('@heroui-pro/react/css'\\)\\)}catch\\(e\\){console.log\\('FAIL:',e.code, e.message.slice\\(0,120\\)\\)}\")",
+      "Bash(node -e \"const m=require\\('@heroui-pro/react'\\); console.log\\('AppLayout' in m ? 'AppLayout present' : 'keys: '+Object.keys\\(m\\).slice\\(0,20\\).join\\(','\\)\\)\")",
+      "Bash(supabase --version)",
+      "Bash(npx supabase *)",
+      "mcp__supabase__generate_typescript_types",
+      "mcp__supabase__list_edge_functions",
+      "Bash(git rm *)"
     ]
   }
 }

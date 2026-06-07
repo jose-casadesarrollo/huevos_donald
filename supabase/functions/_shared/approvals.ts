@@ -1,4 +1,4 @@
-// Durable tool-approval state for the stateless Telegram path.
+// Durable tool-approval state for the stateless WhatsApp path.
 //
 // AI SDK v5 does not pause generateText for approvals: a guarded tool returns a
 // `tool-approval-request` and the call ends. We persist the EXACT resume payload

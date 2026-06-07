@@ -1,5 +1,8 @@
 import { SettingsPage } from '@/dashboard/views/settings-page'
+import { getServiceConfig } from '@/lib/admin/config/queries'
 
-export default function Page() {
-  return <SettingsPage />
+export default async function Page() {
+  const data = await getServiceConfig()
+
+  return <SettingsPage data={data} />
 }

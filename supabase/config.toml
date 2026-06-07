@@ -7,12 +7,28 @@ project_id = "krapajktuulxvphsgtro"
 # finish during local `supabase functions serve`. Production runs per-request.
 policy = "per_worker"
 
-[functions.agent-telegram]
-# Telegram calls this webhook; it cannot present a Supabase JWT.
-# We authenticate the caller via the X-Telegram-Bot-Api-Secret-Token header instead.
+[functions.agent-whatsapp]
+# Meta (WhatsApp Cloud API) calls this webhook; it cannot present a Supabase JWT.
+# GET = hub.challenge verification; POST auth = fail-closed X-Hub-Signature-256 HMAC.
 verify_jwt = false
 
 [functions.agent-chat]
 # Browser chat endpoint. Auth is handled inside the function (optional Supabase
 # session) + CORS; no platform JWT gate so anonymous visitors can chat too.
+verify_jwt = false
+
+[functions.mercadopago-webhook]
+# MercadoPago posts here; no Supabase JWT. Auth = fail-closed x-signature HMAC.
+verify_jwt = false
+
+[functions.payments-create]
+# Browser (web Brick) entry; auth via CORS allow-list + DB validation.
+verify_jwt = false
+
+[functions.payments-cleanup]
+# pg_cron invokes this over HTTP; guarded by the CLEANUP_SECRET bearer it checks.
+verify_jwt = false
+
+[functions.subscriptions-create]
+# Browser entry to start a subscription; auth via CORS allow-list + DB validation.
 verify_jwt = false

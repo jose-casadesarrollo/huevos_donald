@@ -1,178 +1,84 @@
-"use client";
+'use client'
 
-// TODO: Wire these form controls to your account/workspace store. The controls
-// are currently uncontrolled and don't persist changes.
+import { useState } from 'react'
+import { Tabs, Toast } from '@heroui/react'
+import type { Key } from '@heroui/react'
 
-import type {ReactNode} from "react";
+import type { ServiceConfigData } from '@/lib/admin/config/types'
 
-import {
-  Button,
-  Checkbox,
-  Input,
-  Label,
-  ListBox,
-  Select,
-  Separator,
-  TextArea,
-  TextField,
-} from "@heroui/react";
+import { CoverageTab } from './settings/coverage-tab'
+import { SlotsTab } from './settings/slots-tab'
+import { BlackoutTab } from './settings/blackout-tab'
+import { PlansTab } from './settings/plans-tab'
+import { PolicyTab } from './settings/policy-tab'
+import { CouponsTab } from './settings/coupons-tab'
+import { LedgersTab } from './settings/ledgers-tab'
+import { LotsTab } from './settings/lots-tab'
 
-const REGIONS = [
-  {id: "rm", label: "Región Metropolitana"},
-  {id: "vs", label: "Valparaíso"},
-  {id: "bb", label: "Biobío"},
-  {id: "ar", label: "La Araucanía"},
-  {id: "lr", label: "Los Ríos"},
-  {id: "ll", label: "Los Lagos"},
-] as const;
+const TABS = [
+  { id: 'cobertura', label: 'Cobertura & días' },
+  { id: 'horarios', label: 'Horarios & cupos' },
+  { id: 'feriados', label: 'Feriados' },
+  { id: 'planes', label: 'Planes & precios' },
+  { id: 'politicas', label: 'Políticas' },
+  { id: 'cupones', label: 'Cupones' },
+  { id: 'saldo', label: 'Saldo & Puntos' },
+  { id: 'lotes', label: 'Lotes' },
+] as const
 
-const CURRENCIES = [
-  {id: "clp", label: "CLP - Peso chileno"},
-  {id: "usd", label: "USD - Dólar estadounidense"},
-  {id: "eur", label: "EUR - Euro"},
-] as const;
+export function SettingsPage({ data }: { data: ServiceConfigData }) {
+  const [tab, setTab] = useState<string>('cobertura')
 
-export function SettingsPage() {
   return (
-    <form className="mx-auto flex max-w-5xl flex-col gap-4 px-5 pb-10 pt-4">
-      <p className="text-muted text-sm">Gestiona el perfil y las preferencias de tu organización.</p>
+    <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 pb-12 pt-4">
+      <Toast.Provider />
 
-      <Separator />
+      <p className="text-muted text-sm">
+        Configura la operación del servicio: cobertura y días de reparto, horarios, precios y políticas.
+      </p>
 
-      <SettingsRow
-        description="Se mostrará en tu perfil público."
-        label="Nombre de la organización"
-      >
-        <TextField name="org-name">
-          <Label className="sr-only">Nombre de la organización</Label>
-          <Input fullWidth placeholder="Tu organización" />
-        </TextField>
-      </SettingsRow>
+      <Tabs selectedKey={tab} onSelectionChange={(k: Key) => setTab(String(k))} variant="secondary">
+        <Tabs.ListContainer>
+          <Tabs.List aria-label="Configuración del servicio" className="overflow-x-auto">
+            {TABS.map((t) => (
+              <Tabs.Tab key={t.id} id={t.id}>
+                {t.label}
+                <Tabs.Indicator />
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
+        </Tabs.ListContainer>
 
-      <Separator />
-
-      <SettingsRow
-        description="Se mostrará en tu perfil público. Máximo 240 caracteres."
-        label="Biografía de la organización"
-      >
-        <TextField name="org-bio">
-          <Label className="sr-only">Biografía de la organización</Label>
-          <TextArea
-            fullWidth
-            className="min-h-24 resize-y"
-            maxLength={240}
-            placeholder="Cuéntales a los clientes sobre tu organización"
+        <Tabs.Panel className="pt-4" id="cobertura">
+          <CoverageTab zones={data.zones} zoneDays={data.zoneDays} />
+        </Tabs.Panel>
+        <Tabs.Panel className="pt-4" id="horarios">
+          <SlotsTab zones={data.zones} slots={data.slots} capacity={data.capacity} utilization={data.utilization} />
+        </Tabs.Panel>
+        <Tabs.Panel className="pt-4" id="feriados">
+          <BlackoutTab zones={data.zones} blackouts={data.blackouts} />
+        </Tabs.Panel>
+        <Tabs.Panel className="pt-4" id="planes">
+          <PlansTab plans={data.plans} products={data.products} />
+        </Tabs.Panel>
+        <Tabs.Panel className="pt-4" id="politicas">
+          <PolicyTab settings={data.settings} />
+        </Tabs.Panel>
+        <Tabs.Panel className="pt-4" id="cupones">
+          <CouponsTab coupons={data.coupons} redemptions={data.redemptions} customers={data.customers} />
+        </Tabs.Panel>
+        <Tabs.Panel className="pt-4" id="saldo">
+          <LedgersTab
+            customers={data.customers}
+            subscriptions={data.subscriptions}
+            eggLedger={data.eggLedger}
+            pointsLedger={data.pointsLedger}
           />
-        </TextField>
-      </SettingsRow>
-
-      <Separator />
-
-      <SettingsRow
-        description="Así pueden contactarte los clientes para soporte."
-        label="Correo de la organización"
-      >
-        <TextField name="org-email">
-          <Label className="sr-only">Correo de la organización</Label>
-          <Input fullWidth placeholder="info@ejemplo.com" type="email" />
-        </TextField>
-        <Checkbox id="org-email-public" name="org-email-public">
-          <Checkbox.Control>
-            <Checkbox.Indicator />
-          </Checkbox.Control>
-          <Checkbox.Content>
-            <Label htmlFor="org-email-public">Mostrar el correo en el perfil público</Label>
-          </Checkbox.Content>
-        </Checkbox>
-      </SettingsRow>
-
-      <Separator />
-
-      <SettingsRow description="Lugar donde está registrada tu organización." label="Dirección">
-        <TextField name="address-street">
-          <Label className="sr-only">Dirección</Label>
-          <Input fullWidth placeholder="Calle y número" />
-        </TextField>
-        <TextField name="address-city">
-          <Label className="sr-only">Ciudad</Label>
-          <Input fullWidth placeholder="Ciudad" />
-        </TextField>
-        <div className="grid grid-cols-[1fr_160px] gap-3">
-          <Select name="address-region" placeholder="Región">
-            <Label className="sr-only">Región</Label>
-            <Select.Trigger>
-              <Select.Value />
-              <Select.Indicator />
-            </Select.Trigger>
-            <Select.Popover>
-              <ListBox>
-                {REGIONS.map((r) => (
-                  <ListBox.Item key={r.id} id={r.id} textValue={r.label}>
-                    {r.label}
-                    <ListBox.ItemIndicator />
-                  </ListBox.Item>
-                ))}
-              </ListBox>
-            </Select.Popover>
-          </Select>
-          <TextField name="address-postal">
-            <Label className="sr-only">Código postal</Label>
-            <Input fullWidth placeholder="Código postal" />
-          </TextField>
-        </div>
-      </SettingsRow>
-
-      <Separator />
-
-      <SettingsRow
-        description="La moneda en la que cobrará tu organización."
-        label="Moneda"
-      >
-        <Select name="currency" placeholder="Selecciona la moneda">
-          <Label className="sr-only">Moneda</Label>
-          <Select.Trigger>
-            <Select.Value />
-            <Select.Indicator />
-          </Select.Trigger>
-          <Select.Popover>
-            <ListBox>
-              {CURRENCIES.map((c) => (
-                <ListBox.Item key={c.id} id={c.id} textValue={c.label}>
-                  {c.label}
-                  <ListBox.ItemIndicator />
-                </ListBox.Item>
-              ))}
-            </ListBox>
-          </Select.Popover>
-        </Select>
-      </SettingsRow>
-
-      <Separator />
-
-      <footer className="flex items-center justify-end gap-2 pt-2">
-        <Button type="reset" variant="ghost">
-          Restablecer
-        </Button>
-        <Button type="submit">Guardar cambios</Button>
-      </footer>
-    </form>
-  );
-}
-
-interface SettingsRowProps {
-  description: string;
-  label: string;
-  children: ReactNode;
-}
-
-function SettingsRow({children, description, label}: SettingsRowProps) {
-  return (
-    <div className="grid grid-cols-1 gap-4 py-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] md:gap-10">
-      <div className="flex flex-col gap-1">
-        <span className="text-foreground text-sm font-medium">{label}</span>
-        <p className="text-muted text-xs leading-snug">{description}</p>
-      </div>
-      <div className="flex flex-col gap-3">{children}</div>
+        </Tabs.Panel>
+        <Tabs.Panel className="pt-4" id="lotes">
+          <LotsTab lots={data.lots} products={data.products} />
+        </Tabs.Panel>
+      </Tabs>
     </div>
-  );
+  )
 }
