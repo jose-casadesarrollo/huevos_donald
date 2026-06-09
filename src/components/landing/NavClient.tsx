@@ -3,6 +3,8 @@
 import { Navbar } from "@heroui-pro/react";
 import { Button } from "@heroui/react";
 
+import { CartNavButton } from "@/components/tienda/cart/CartNavButton";
+
 type NavClientProps = {
   user: { email: string | null } | null;
   isAdmin: boolean;
@@ -36,7 +38,9 @@ export function NavClient({ user, isAdmin }: NavClientProps) {
         <Navbar.Content className="hidden md:flex">
           <Navbar.Item href="#como-funciona">Cómo Funciona</Navbar.Item>
           <Navbar.Item href="/planes">Planes</Navbar.Item>
+          <Navbar.Item href="/tienda">Tienda</Navbar.Item>
           <Navbar.Item href="#origen">Nosotros</Navbar.Item>
+          <CartNavButton />
           {user ? (
             <Button
               variant="primary"
@@ -69,6 +73,8 @@ export function NavClient({ user, isAdmin }: NavClientProps) {
       <Navbar.Menu>
         <Navbar.MenuItem href="#como-funciona">Cómo Funciona</Navbar.MenuItem>
         <Navbar.MenuItem href="/planes">Planes</Navbar.MenuItem>
+        <Navbar.MenuItem href="/tienda">Tienda</Navbar.MenuItem>
+        <Navbar.MenuItem href="/tienda/carro">Mi carro</Navbar.MenuItem>
         <Navbar.MenuItem href="#origen">Nosotros</Navbar.MenuItem>
         {user ? (
           <Navbar.MenuItem href={dashboardHref}>{dashboardLabel}</Navbar.MenuItem>
