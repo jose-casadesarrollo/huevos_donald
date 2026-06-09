@@ -8,6 +8,7 @@ import {
   Headphones,
   House,
   ListCheck,
+  Persons,
   Receipt,
 } from "@gravity-ui/icons";
 
@@ -21,6 +22,7 @@ export type NavItem = {
 export const NAV_ITEMS: readonly NavItem[] = [
   {href: "/", icon: House, label: "Inicio"},
   {href: "/orders", icon: Receipt, label: "Pedidos"},
+  {href: "/clients", icon: Persons, label: "Clientes"},
   {href: "/support", icon: Headphones, label: "Soporte"},
   {badge: "Nuevo", href: "/tracker", icon: ListCheck, label: "Seguimiento"},
   {href: "/agente", icon: FaceRobot, label: "Agente IA"},
