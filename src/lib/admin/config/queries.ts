@@ -30,6 +30,8 @@ export async function getServiceConfig(): Promise<ServiceConfigData> {
     pointsLedger,
     profiles,
     subscriptions,
+    agentConfig,
+    agentConfigVersions,
   ] = await Promise.all([
     supabase.from('delivery_zones').select('*').order('active', { ascending: false }).order('name'),
     supabase.from('delivery_zone_days').select('*').order('zone_id').order('weekday'),
@@ -52,6 +54,8 @@ export async function getServiceConfig(): Promise<ServiceConfigData> {
     supabase.from('points_ledger').select('*').order('created_at', { ascending: false }).limit(100),
     supabase.from('profiles').select('id, full_name, email, points_balance').order('full_name'),
     supabase.from('subscriptions').select('id, user_id, plan_id, status, egg_balance'),
+    supabase.from('agent_config_versions').select('*').eq('is_active', true).maybeSingle(),
+    supabase.from('agent_config_versions').select('*').order('version', { ascending: false }).limit(50),
   ])
 
   return {
@@ -82,5 +86,7 @@ export async function getServiceConfig(): Promise<ServiceConfigData> {
       status: s.status,
       eggBalance: s.egg_balance ?? 0,
     })),
+    agentConfig: agentConfig.data ?? null,
+    agentConfigVersions: agentConfigVersions.data ?? [],
   }
 }

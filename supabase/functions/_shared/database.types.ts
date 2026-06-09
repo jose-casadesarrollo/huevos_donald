@@ -186,6 +186,51 @@ export type Database = {
           },
         ]
       }
+      agent_config_versions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          limits: string
+          model: string
+          note: string | null
+          order_rules: string
+          persona: string
+          sop_policies: string
+          temperature: number
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          limits?: string
+          model?: string
+          note?: string | null
+          order_rules?: string
+          persona?: string
+          sop_policies?: string
+          temperature?: number
+          version: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          limits?: string
+          model?: string
+          note?: string | null
+          order_rules?: string
+          persona?: string
+          sop_policies?: string
+          temperature?: number
+          version?: number
+        }
+        Relationships: []
+      }
       app_settings: {
         Row: {
           description: string | null
@@ -1595,9 +1640,25 @@ export type Database = {
       }
     }
     Functions: {
+      activate_agent_config_version: {
+        Args: { p_id: string }
+        Returns: Database["public"]["Tables"]["agent_config_versions"]["Row"]
+      }
       delivery_customer_state: {
         Args: { p_delivery_id: string }
         Returns: string
+      }
+      save_agent_config: {
+        Args: {
+          p_persona: string
+          p_order_rules: string
+          p_sop_policies: string
+          p_limits: string
+          p_model: string
+          p_temperature: number
+          p_note?: string
+        }
+        Returns: Database["public"]["Tables"]["agent_config_versions"]["Row"]
       }
       generate_upcoming_deliveries: { Args: never; Returns: Json }
       has_role: {

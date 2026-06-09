@@ -14,6 +14,7 @@ import {
   type UIMessage,
 } from "ai";
 import { buildSystemPrompt, getModel } from "../_shared/agent.ts";
+import { loadAgentConfig } from "../_shared/config.ts";
 import { buildTools } from "../_shared/tools.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 import {
@@ -64,9 +65,11 @@ Deno.serve(async (req) => {
     await db.from("agent_conversations").update({ user_id: userId }).eq("id", conv.id);
   }
 
+  const config = await loadAgentConfig(db);
   const result = streamText({
-    model: getModel(),
-    system: buildSystemPrompt({ authenticated: !!userId }),
+    model: getModel(config.model),
+    system: buildSystemPrompt({ config, authenticated: !!userId }),
+    temperature: config.temperature,
     messages: await convertToModelMessages(messages),
     tools: buildTools(db, { conversationId: conv.id, channel: CHANNEL, userId }),
     stopWhen: stepCountIs(8),

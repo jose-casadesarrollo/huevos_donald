@@ -21,6 +21,7 @@ export type Incident = Tables['incidents']['Row']
 export type ProductionLot = Tables['production_lots']['Row']
 export type EggLedgerEntry = Tables['egg_ledger']['Row']
 export type PointsLedgerEntry = Tables['points_ledger']['Row']
+export type AgentConfigVersion = Tables['agent_config_versions']['Row']
 
 /** Lightweight customer projection for pickers + ledger labelling. */
 export type CustomerLite = {
@@ -57,6 +58,8 @@ export type ServiceConfigData = {
   pointsLedger: PointsLedgerEntry[]
   customers: CustomerLite[]
   subscriptions: SubscriptionLite[]
+  agentConfig: AgentConfigVersion | null
+  agentConfigVersions: AgentConfigVersion[]
 }
 
 /** Standard return shape for every config server action. */

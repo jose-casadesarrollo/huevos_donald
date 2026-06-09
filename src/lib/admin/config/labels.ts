@@ -176,6 +176,50 @@ export const SETTING_GROUP_ORDER: SettingMeta['group'][] = [
   'Otros',
 ]
 
+// --- Agente IA (agent_config_versions) ------------------------------------
+// Editable prose sections of the system prompt. The dynamic skeleton (today's
+// date, the tool-capabilities list, the logged-in/guest line, the headings)
+// stays in code (supabase/functions/_shared/agent.ts) so it always matches the
+// registered tools — admins only edit the prose below + model + temperature.
+export type AgentSectionKey = 'persona' | 'order_rules' | 'sop_policies' | 'limits'
+
+export const AGENT_SECTION_FIELDS: {
+  key: AgentSectionKey
+  label: string
+  help: string
+}[] = [
+  {
+    key: 'persona',
+    label: 'Persona y tono',
+    help: 'Quién es el asistente, su tono y los pilares de marca. Es la apertura del prompt (sin encabezado).',
+  },
+  {
+    key: 'order_rules',
+    label: 'Reglas para tomar pedidos',
+    help: 'Cómo reúne datos, confirma y crea pedidos. Va bajo el encabezado “## Reglas para tomar pedidos”.',
+  },
+  {
+    key: 'sop_policies',
+    label: 'Conocimiento de marca y políticas (SOP)',
+    help: 'Cobertura, horarios, pagos, estados, pausas, reembolsos, etc. Va bajo “## Conocimiento de marca y políticas (SOP)”.',
+  },
+  {
+    key: 'limits',
+    label: 'Límites',
+    help: 'Qué NO debe hacer el asistente. Va bajo el encabezado “## Límites”.',
+  },
+]
+
+/** OpenAI models offered in the agent config picker. */
+export const AGENT_MODEL_OPTIONS: string[] = [
+  'gpt-4o-mini',
+  'gpt-4o',
+  'gpt-4.1-mini',
+  'gpt-4.1',
+]
+
+export const AGENT_TEMPERATURE = { min: 0, max: 2, step: 0.1, default: 0.3 } as const
+
 /** dispatch_hours weekday keys in display order (no weekend). */
 export const DISPATCH_DAYS: { key: string; label: string }[] = [
   { key: 'mon', label: 'Lunes' },

@@ -186,6 +186,51 @@ export type Database = {
           },
         ]
       }
+      agent_config_versions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          limits: string
+          model: string
+          note: string | null
+          order_rules: string
+          persona: string
+          sop_policies: string
+          temperature: number
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          limits?: string
+          model?: string
+          note?: string | null
+          order_rules?: string
+          persona?: string
+          sop_policies?: string
+          temperature?: number
+          version: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          limits?: string
+          model?: string
+          note?: string | null
+          order_rules?: string
+          persona?: string
+          sop_policies?: string
+          temperature?: number
+          version?: number
+        }
+        Relationships: []
+      }
       app_settings: {
         Row: {
           description: string | null
@@ -1481,6 +1526,42 @@ export type Database = {
       }
     }
     Views: {
+      admin_clients: {
+        Row: {
+          channel_chatbot: boolean | null
+          channel_web: boolean | null
+          client_key: string | null
+          conversations_count: number | null
+          egg_balance: number | null
+          email: string | null
+          has_account: boolean | null
+          last_activity_at: string | null
+          name: string | null
+          orders_count: number | null
+          phone: string | null
+          points_balance: number | null
+          profile_id: string | null
+          subscriber_since: string | null
+          subscription_status:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          subscriptions_count: number | null
+          total_eggs_delivered: number | null
+          total_paid_cents: number | null
+        }
+        Relationships: []
+      }
+      client_identities: {
+        Row: {
+          activity_at: string | null
+          channel: string | null
+          client_key: string | null
+          profile_id: string | null
+          source: string | null
+          source_id: string | null
+        }
+        Relationships: []
+      }
       admin_deliveries_by_day: {
         Row: {
           delivered: number | null
@@ -1595,9 +1676,25 @@ export type Database = {
       }
     }
     Functions: {
+      activate_agent_config_version: {
+        Args: { p_id: string }
+        Returns: Database["public"]["Tables"]["agent_config_versions"]["Row"]
+      }
       delivery_customer_state: {
         Args: { p_delivery_id: string }
         Returns: string
+      }
+      save_agent_config: {
+        Args: {
+          p_persona: string
+          p_order_rules: string
+          p_sop_policies: string
+          p_limits: string
+          p_model: string
+          p_temperature: number
+          p_note?: string
+        }
+        Returns: Database["public"]["Tables"]["agent_config_versions"]["Row"]
       }
       generate_upcoming_deliveries: { Args: never; Returns: Json }
       has_role: {
