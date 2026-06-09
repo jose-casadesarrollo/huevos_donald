@@ -24,6 +24,7 @@ import {
   type ToolApprovalResponse,
 } from "ai";
 import { buildSystemPrompt, getModel } from "../_shared/agent.ts";
+import { loadAgentConfig } from "../_shared/config.ts";
 import { frequencyEs } from "../_shared/catalog.ts";
 import { buildTools, summarizeOrderDraft } from "../_shared/tools.ts";
 import { createAdminClient, type Db } from "../_shared/supabase.ts";
@@ -253,8 +254,10 @@ async function handleMessage(db: Db, incoming: IncomingMessage): Promise<void> {
     await db.from("agent_conversations").update({ user_id: userId }).eq("id", conv.id);
   }
 
-  const model = getModel();
-  const system = buildSystemPrompt({ authenticated: !!userId, interactive: true });
+  const config = await loadAgentConfig(db);
+  const model = getModel(config.model);
+  const system = buildSystemPrompt({ config, authenticated: !!userId, interactive: true });
+  const temperature = config.temperature;
   const tools = buildTools(db, { conversationId: conv.id, channel: CHANNEL, userId });
 
   // ── Resume path: a confirmation is pending ──────────────────────────────────
@@ -296,7 +299,7 @@ async function handleMessage(db: Db, incoming: IncomingMessage): Promise<void> {
     const toolMessage: ModelMessage = { role: "tool", content: [approvalResponse] };
     messages.push(toolMessage);
 
-    const result = await generateText({ model, system, tools, messages, stopWhen: STEP_LIMIT });
+    const result = await generateText({ model, system, temperature, tools, messages, stopWhen: STEP_LIMIT });
 
     // Resolve the approval FIRST so a partial failure can't leave it stuck pending
     // (which would re-prompt forever). Then persist the resumed turn.
@@ -347,7 +350,7 @@ async function handleMessage(db: Db, incoming: IncomingMessage): Promise<void> {
   const userMessage: ModelMessage = selMsg ?? { role: "user", content: text };
   const messages = [...history, userMessage];
 
-  const result = await generateText({ model, system, tools, messages, stopWhen: STEP_LIMIT });
+  const result = await generateText({ model, system, temperature, tools, messages, stopWhen: STEP_LIMIT });
   const approvals = collectApprovalRequests(result);
 
   if (approvals.length > 0) {
