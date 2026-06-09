@@ -103,16 +103,31 @@ export async function loadModelMessages(
 ): Promise<ModelMessage[]> {
   const { data, error } = await db
     .from("agent_messages")
-    .select("role, parts")
+    .select("role, parts, content_text")
     .eq("conversation_id", conversationId)
     .order("created_at", { ascending: true })
     .limit(limit);
   if (error) throw new Error(`loadModelMessages: ${error.message}`);
-  return (data ?? []).map((r) => ({
-    role: r.role as ModelMessage["role"],
-    // parts holds the original ModelMessage content (string-wrapped as a text part).
-    content: r.parts as ModelMessage["content"],
-  })) as ModelMessage[];
+
+  // Replay only user/assistant TEXT — deliberately drop tool-call / tool-result /
+  // approval parts (and role:'tool' rows). WHY: a turn's messages are written in a
+  // single batch that shares one `created_at`, and we order by `created_at` only,
+  // so the relative order of a turn's rows is NOT guaranteed on read. A tool_call
+  // separated from its tool_result (or returned out of order) makes the model
+  // provider reject the entire request, which threw and surfaced as the
+  // "Disculpa, tuve un problema…" replies. The assistant's text already carries
+  // outcomes ("¡Tu pedido ha sido creado!"), and the model re-calls tools as
+  // needed in the new turn. NOTE: the approval/resume path does NOT use this — it
+  // replays agent_pending_approvals.resumeMessages, built in-request and correctly
+  // ordered — so confirmations are unaffected.
+  const out: ModelMessage[] = [];
+  for (const r of data ?? []) {
+    if (r.role !== "user" && r.role !== "assistant") continue;
+    const text = (extractText(r.parts) || r.content_text || "").trim();
+    if (!text) continue;
+    out.push({ role: r.role, content: text });
+  }
+  return out;
 }
 
 /** Append provider messages (one row each). Token usage lands on the last row. */
