@@ -27,7 +27,15 @@
       "Bash(npx supabase *)",
       "mcp__supabase__generate_typescript_types",
       "mcp__supabase__list_edge_functions",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "mcp__heroui-pro__get_component_docs",
+      "Bash(grep -n -i '| \\\\`color\\\\`\\\\|| \\\\`variant\\\\`\\\\|| \\\\`size\\\\`' /home/vscode/.claude/projects/-workspaces-huevos-donald/ddb558a7-464d-4689-93eb-d7a8cd8c1c77/tool-results/mcp-heroui-pro-get_component_docs-1780968642403.txt)",
+      "Bash(sed -n 1460,1490p /home/vscode/.claude/projects/-workspaces-huevos-donald/ddb558a7-464d-4689-93eb-d7a8cd8c1c77/tool-results/mcp-heroui-pro-get_component_docs-1780968642403.txt)",
+      "Bash(grep -n -i '### .*Props\\\\|isRowHeader\\\\|| \\\\`variant\\\\`\\\\|removeWrapper\\\\|Table.Content\\\\|Table.Column Props\\\\|Table.Row Props' /home/vscode/.claude/projects/-workspaces-huevos-donald/ddb558a7-464d-4689-93eb-d7a8cd8c1c77/tool-results/mcp-heroui-pro-get_component_docs-1780968642403.txt)",
+      "Bash(node -e \"const h=require\\('@heroui/react'\\); ['Button','Chip','Input','Label','ListBox','Select','Slider','Table','TextArea','TextField'].forEach\\(n=>console.log\\(n, typeof h[n]!=='undefined'?'OK':'MISSING'\\)\\)\")",
+      "Bash(env)",
+      "Bash(node -e \"try{require.resolve\\('@internationalized/date'\\);console.log\\('YES resolvable'\\)}catch\\(e\\){console.log\\('NO'\\)}\")",
+      "Bash(node -e \"const h=require\\('@heroui/react'\\); console.log\\('AlertDialog',!!h.AlertDialog,'Alert',!!h.Alert,'RadioGroup',!!h.RadioGroup,'Radio',!!h.Radio,'TextArea',!!h.TextArea,'ComboBox',!!h.ComboBox,'NumberField',!!h.NumberField\\)\")"
     ]
   }
 }
