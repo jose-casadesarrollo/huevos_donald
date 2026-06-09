@@ -58,6 +58,10 @@ export type ServiceConfigData = {
   pointsLedger: PointsLedgerEntry[]
   customers: CustomerLite[]
   subscriptions: SubscriptionLite[]
+}
+
+/** Agent editor data — fetched by the dedicated /admin/agente route. */
+export type AgentConfigData = {
   agentConfig: AgentConfigVersion | null
   agentConfigVersions: AgentConfigVersion[]
 }

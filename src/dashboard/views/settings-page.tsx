@@ -14,7 +14,6 @@ import { PolicyTab } from './settings/policy-tab'
 import { CouponsTab } from './settings/coupons-tab'
 import { LedgersTab } from './settings/ledgers-tab'
 import { LotsTab } from './settings/lots-tab'
-import { AgentTab } from './settings/agent-tab'
 
 const TABS = [
   { id: 'cobertura', label: 'Cobertura & días' },
@@ -25,7 +24,6 @@ const TABS = [
   { id: 'cupones', label: 'Cupones' },
   { id: 'saldo', label: 'Saldo & Puntos' },
   { id: 'lotes', label: 'Lotes' },
-  { id: 'agente', label: 'Agente IA' },
 ] as const
 
 export function SettingsPage({ data }: { data: ServiceConfigData }) {
@@ -79,9 +77,6 @@ export function SettingsPage({ data }: { data: ServiceConfigData }) {
         </Tabs.Panel>
         <Tabs.Panel className="pt-4" id="lotes">
           <LotsTab lots={data.lots} products={data.products} />
-        </Tabs.Panel>
-        <Tabs.Panel className="pt-4" id="agente">
-          <AgentTab agentConfig={data.agentConfig} versions={data.agentConfigVersions} />
         </Tabs.Panel>
       </Tabs>
     </div>

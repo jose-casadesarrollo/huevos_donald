@@ -3,6 +3,7 @@ import type {ComponentType} from "react";
 import {
   ArrowRightFromSquare,
   CircleQuestion,
+  FaceRobot,
   Gear,
   Headphones,
   House,
@@ -22,6 +23,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   {href: "/orders", icon: Receipt, label: "Pedidos"},
   {href: "/support", icon: Headphones, label: "Soporte"},
   {badge: "Nuevo", href: "/tracker", icon: ListCheck, label: "Seguimiento"},
+  {href: "/agente", icon: FaceRobot, label: "Agente IA"},
   {href: "/settings", icon: Gear, label: "Ajustes"},
 ] as const;
 
