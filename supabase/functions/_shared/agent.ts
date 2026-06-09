@@ -39,12 +39,15 @@ export function buildSystemPrompt(opts: {
   config?: AgentConfig;
   today?: string;
   authenticated?: boolean;
+  /** Channel renders plans/zones as tappable lists (WhatsApp). Web stays prose. */
+  interactive?: boolean;
 }): string {
   // Falls back to the hardcoded defaults if no config is passed (e.g. a caller
   // that hasn't been wired to loadAgentConfig yet), so the prompt is never empty.
   const config = opts.config ?? DEFAULT_AGENT_CONFIG;
   const today = opts.today ?? todayInSantiago();
   const authenticated = opts.authenticated ?? false;
+  const interactive = opts.interactive ?? false;
   return [
     config.persona,
     "",
@@ -72,5 +75,18 @@ export function buildSystemPrompt(opts: {
     "",
     "## Límites",
     config.limits,
+    // WhatsApp only: the channel renders listPlans/listZones output as a tappable
+    // list and createOrder's pay link as a button, so steer the model to stay
+    // brief and not duplicate that data in prose. Web (interactive=false) is unchanged.
+    ...(interactive
+      ? [
+          "",
+          "## Formato del canal (WhatsApp)",
+          "- Responde MUY breve, en mensajes cortos aptos para WhatsApp.",
+          '- Cuando uses listPlans o listZones, este canal muestra las opciones como una lista tocable. NO enumeres planes, precios ni comunas en el texto: di una frase guía corta (p. ej. "Elige tu plan abajo" o "Elige tu comuna abajo") y deja que el cliente toque la opción.',
+          "- Cuando el cliente toque una opción, su mensaje incluirá el plan_id o zone_id entre paréntesis; úsalo tal cual en checkDeliveryAvailability/createOrder, sin volver a llamar listPlans/listZones.",
+          "- Cuando createOrder devuelva payment_url, este canal lo muestra como un botón de pago; basta con una frase breve, no repitas el enlace en el texto.",
+        ]
+      : []),
   ].join("\n");
 }

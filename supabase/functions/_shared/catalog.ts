@@ -19,6 +19,11 @@ const FREQUENCY_ES: Record<string, string> = {
   monthly: "mensual",
 };
 
+/** Spanish label for a plan frequency (falls back to the raw value if unknown). */
+export function frequencyEs(f: string): string {
+  return FREQUENCY_ES[f] ?? f;
+}
+
 export interface PlanRow {
   id: string;
   slug: string | null;
@@ -56,7 +61,7 @@ export async function getPlanById(db: Db, id: string): Promise<PlanRow | null> {
 }
 
 export function describePlan(p: PlanRow): string {
-  const freq = FREQUENCY_ES[p.frequency] ?? p.frequency;
+  const freq = frequencyEs(p.frequency);
   return `${p.name} (${freq}): ${p.quantity_per_delivery} huevos por entrega — ${formatCLP(p.price_cents)} ${freq}. [plan_id: ${p.id}]`;
 }
 

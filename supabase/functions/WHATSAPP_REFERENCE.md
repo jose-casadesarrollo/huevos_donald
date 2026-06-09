@@ -63,6 +63,36 @@ select name, description from vault.secrets where name like 'WHATSAPP\_%' order 
   `Authorization: Bearer <ACCESS_TOKEN>` and
   `{ messaging_product:"whatsapp", recipient_type:"individual", to, type:"text", text:{ body } }`.
 
+## Interactive messages
+
+`extractIncomingMessages` (was `…TextMessages`) also normalizes **taps**: a reply button arrives as
+`type:"interactive"` with `interactive.button_reply.{id,title}`, a list pick as `interactive.list_reply.{id,title,description}`,
+not as `type:"text"`. The `id` we set on the outbound element comes back verbatim; `context.id` is the
+`wamid` of the message we sent. All three senders below reuse `postToGraph`, clamp every field on
+send, are best-effort (never throw), and are only deliverable inside the 24h window (the agent always
+replies, so that holds).
+
+**Reply buttons** — `sendWhatsAppButtons(db, to, body, buttons, {footer})`: up to **3** buttons
+(title ≤20, id ≤256, body ≤1024, footer ≤60). Used for **approvals**: the prompt is sent as
+**Confirmar / Cancelar** buttons whose ids encode `appr:<approvalId>:yes|no`, so a tap resolves the
+exact approval deterministically (see `approvalButtons` / `parseButtonDecision`). Typed `sí`/`no`
+still works as a fallback (`parseDecision`).
+
+**List pickers** — `sendWhatsAppList(db, to, body, button, sections, {footer,header})`: a tappable
+list (**≤10 rows total** across sections; row title ≤24, description ≤72, id ≤200; list button ≤20).
+The model calling `listPlans`/`listZones` IS the render signal — the webhook deterministically turns
+those tool results into a list with row ids `plan:<plan_id>` / `zone:<zone_id>` (the WhatsApp system
+prompt steers the model to stay brief and not enumerate options in prose). On tap, the row id flows
+back as a synthetic user message carrying the UUID (`selectionToUserMessage`) so the model can route
+it into `checkDeliveryAvailability` / `createOrder`. Empty catalog → no list is sent (no empty-sections
+payload, which Graph rejects).
+
+**CTA URL button** — `sendWhatsAppCtaUrl(db, to, body, buttonText, url, {footer,header})`: one
+tappable link button (`action.name:"cta_url"`, `parameters:{display_text,url}`). Used after a
+confirmed `createOrder` to surface the MercadoPago `payment_url` as a **Pagar ahora** button (body is
+kept URL-free so the link isn't shown twice). A tap opens the URL and produces **no** inbound webhook —
+payment confirmation arrives via the MercadoPago webhook, not here.
+
 ## Identity
 
 WhatsApp **platform-verifies** the sender's number, so `agent-whatsapp` passes `from` as
@@ -92,4 +122,18 @@ curl "http://localhost:54321/functions/v1/agent-whatsapp?hub.mode=subscribe&hub.
 curl -X POST "http://localhost:54321/functions/v1/agent-whatsapp" \
   -H "Content-Type: application/json" \
   -d '{"object":"whatsapp_business_account","entry":[{"id":"WABA_ID","changes":[{"field":"messages","value":{"messaging_product":"whatsapp","metadata":{"phone_number_id":"PNID"},"contacts":[{"wa_id":"56912345678","profile":{"name":"Test"}}],"messages":[{"from":"56912345678","id":"wamid.TEST1","timestamp":"1700000000","type":"text","text":{"body":"hola, ¿qué planes tienen?"}}]}}]}]}'
+
+# POST an approval BUTTON TAP (interactive.button_reply). The id must match a live
+# pending approval: "appr:<approvalId>:yes" confirms, ":no" cancels. Substitute the
+# approvalId saved in agent_pending_approvals for the conversation.
+curl -X POST "http://localhost:54321/functions/v1/agent-whatsapp" \
+  -H "Content-Type: application/json" \
+  -d '{"object":"whatsapp_business_account","entry":[{"id":"WABA_ID","changes":[{"field":"messages","value":{"messaging_product":"whatsapp","metadata":{"phone_number_id":"PNID"},"contacts":[{"wa_id":"56912345678","profile":{"name":"Test"}}],"messages":[{"from":"56912345678","id":"wamid.TAP1","timestamp":"1700000001","type":"interactive","context":{"id":"wamid.OUTBOUND"},"interactive":{"type":"button_reply","button_reply":{"id":"appr:<approvalId>:yes","title":"✅ Confirmar"}}}]}}]}]}'
+
+# POST a LIST PICK (interactive.list_reply). The id is what we set on the row:
+# "plan:<plan_id>" / "zone:<zone_id>" — re-enters as a synthetic user message
+# carrying the UUID. Substitute a real plans.id / delivery_zones.id.
+curl -X POST "http://localhost:54321/functions/v1/agent-whatsapp" \
+  -H "Content-Type: application/json" \
+  -d '{"object":"whatsapp_business_account","entry":[{"id":"WABA_ID","changes":[{"field":"messages","value":{"messaging_product":"whatsapp","metadata":{"phone_number_id":"PNID"},"contacts":[{"wa_id":"56912345678","profile":{"name":"Test"}}],"messages":[{"from":"56912345678","id":"wamid.TAP2","timestamp":"1700000002","type":"interactive","interactive":{"type":"list_reply","list_reply":{"id":"plan:<plan_id>","title":"Plan Familiar","description":"12 huevos · $3.990 semanal"}}}]}}]}]}'
 ```
